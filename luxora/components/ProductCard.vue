@@ -2,7 +2,7 @@
     <div class="group relative bg-white border border-gray-100 hover:shadow-xl transition-shadow duration-300">
         <!-- Image -->
         <div class="aspect-square overflow-hidden bg-gray-100 relative">
-            <img :src="product.image" :alt="product.name"
+            <img :src="product.images?.[0]?.url || '/assets/images/placeholder-product.jpg'" :alt="product.name"
                 class="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
 
             <!-- Quick Add Button (Visible on Hover) -->
@@ -16,7 +16,7 @@
         <div class="p-4">
             <p class="text-xs text-luxora-gray uppercase tracking-wider mb-1">{{ product.category }}</p>
             <h3 class="text-lg font-serif text-luxora-black mb-2 group-hover:text-luxora-gold transition-colors">
-                <NuxtLink :to="`/product/${product.id}`">
+                <NuxtLink :to="`/product/${product.slug}`">
                     {{ product.name }}
                 </NuxtLink>
             </h3>

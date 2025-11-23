@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customer, items } = body
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customer, items, userId } = body
 
   const generated_signature = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
@@ -27,6 +27,7 @@ export default defineEventHandler(async (event) => {
                 customerAddress: customer.address,
                 customerCity: customer.city,
                 customerZip: customer.zip,
+                userId: userId || null,
                 items: {
                     create: items.map((item: any) => ({
                         productId: item.productId,

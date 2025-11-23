@@ -18,11 +18,13 @@ model User {
   role      String   @default("ADMIN")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
 }
 
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
+  slug        String   @unique @default(cuid())
   description String
   price       Float
   category    String
@@ -43,6 +45,7 @@ model ProductImage {
 model Order {
   id              Int      @id @default(autoincrement())
   status          String   @default("PENDING")
+  deliveryStatus  String   @default("PENDING")
   total           Float
   paymentId       String?
   customerName    String
@@ -50,6 +53,8 @@ model Order {
   customerAddress String
   customerCity    String
   customerZip     String
+  userId          Int?
+  user            User?    @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   items           OrderItem[]

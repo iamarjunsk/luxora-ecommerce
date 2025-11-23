@@ -26,6 +26,10 @@
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Delivery
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Total
                         </th>
                         <th scope="col" class="relative px-6 py-3">
@@ -53,6 +57,15 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <span :class="{
+                                'bg-yellow-100 text-yellow-800': order.deliveryStatus === 'PENDING',
+                                'bg-blue-100 text-blue-800': order.deliveryStatus === 'SHIPPED',
+                                'bg-green-100 text-green-800': order.deliveryStatus === 'DELIVERED'
+                            }" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                {{ order.deliveryStatus }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">₹{{ order.total.toLocaleString() }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -61,7 +74,7 @@
                         </td>
                     </tr>
                     <tr v-if="orders.length === 0">
-                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                        <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
                             No orders found.
                         </td>
                     </tr>
@@ -93,15 +106,25 @@
                         <p class="text-sm text-gray-600">{{ selectedOrder.customerEmail }}</p>
                         <p class="text-sm text-gray-600 mt-2">{{ selectedOrder.customerAddress }}</p>
                         <p class="text-sm text-gray-600">{{ selectedOrder.customerCity }}, {{ selectedOrder.customerZip
-                            }}</p>
+                        }}</p>
                     </div>
                     <div>
                         <h3 class="font-bold text-gray-900 mb-2">Payment Info</h3>
                         <p class="text-sm text-gray-600">Status: <span class="font-semibold text-green-600">{{
-                                selectedOrder.status }}</span></p>
+                            selectedOrder.status }}</span></p>
                         <p class="text-sm text-gray-600">Payment ID: {{ selectedOrder.paymentId }}</p>
                         <p class="text-sm text-gray-600 mt-2">Total: <span class="font-bold text-lg">₹{{
-                                selectedOrder.total.toLocaleString() }}</span></p>
+                            selectedOrder.total.toLocaleString() }}</span></p>
+
+                        <div class="mt-4">
+                            <h3 class="font-bold text-gray-900 mb-2">Delivery Status</h3>
+                            <select v-model="selectedOrder.deliveryStatus" @change="updateStatus(selectedOrder)"
+                                class="border border-gray-300 rounded p-2 text-sm w-full">
+                                <option value="PENDING">PENDING</option>
+                                <option value="SHIPPED">SHIPPED</option>
+                                <option value="DELIVERED">DELIVERED</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -145,10 +168,23 @@ definePageMeta({
     middleware: 'auth'
 })
 
-const { data: orders } = await useFetch('/api/orders')
+const { data: orders, refresh } = await useFetch('/api/orders')
 const selectedOrder = ref(null)
 
 function viewOrderDetails(order) {
     selectedOrder.value = order
+}
+
+async function updateStatus(order) {
+    try {
+        await $fetch(`/api/orders/${order.id}`, {
+            method: 'PUT',
+            body: { deliveryStatus: order.deliveryStatus }
+        })
+        await refresh()
+        // Optional: Show success toast
+    } catch (e) {
+        alert('Failed to update status')
+    }
 }
 </script>

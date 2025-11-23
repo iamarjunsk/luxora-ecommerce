@@ -3,15 +3,23 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
-  const id = event.context.params?.id
+  const idOrSlug = event.context.params?.id
 
-  if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'ID required' })
+  if (!idOrSlug) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Product ID or Slug is required'
+    })
   }
 
-  const product = await prisma.product.findUnique({
-    where: { id: parseInt(id) },
-    include: { images: true },
+  // Check if it's a number (ID) or string (Slug)
+  const isId = !isNaN(Number(idOrSlug))
+
+  const product = await prisma.product.findFirst({
+    where: isId ? { id: parseInt(idOrSlug) } : { slug: idOrSlug },
+    include: {
+      images: true
+    }
   })
 
   if (!product) {

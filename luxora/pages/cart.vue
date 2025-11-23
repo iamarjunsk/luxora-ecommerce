@@ -7,7 +7,8 @@
             <div class="flex-grow space-y-6">
                 <div v-for="item in cartStore.items" :key="item.product.id"
                     class="flex gap-6 p-4 bg-white border border-gray-100 items-center">
-                    <img :src="item.product.image" :alt="item.product.name" class="w-24 h-24 object-cover bg-gray-50" />
+                    <img :src="item.product.images?.[0]?.url || '/assets/images/placeholder-product.jpg'"
+                        :alt="item.product.name" class="w-24 h-24 object-cover bg-gray-50" />
 
                     <div class="flex-grow">
                         <div class="flex justify-between mb-2">

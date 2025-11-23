@@ -64,26 +64,25 @@ import { useCartStore } from '~/stores/cart'
 import { storeToRefs } from 'pinia'
 
 const route = useRoute()
-const productStore = useProductStore()
 const cartStore = useCartStore()
 const { showSnackbar } = useSnackbar()
 
-const { currentProduct: product, loading } = storeToRefs(productStore)
+// Fetch product by slug
+const { data: product, error } = await useFetch(`/api/products/${route.params.slug}`)
 
-// Fetch product details
-await useAsyncData(`product-${route.params.id}`, async () => {
-    await productStore.fetchProduct(route.params.id)
-    return true
-})
+if (error.value || !product.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+}
 
 const quantity = ref(1)
-const activeImage = ref('')
+const activeImage = ref(product.value.images?.[0]?.url || '')
+const selectedSize = ref(null)
 const isViewerOpen = ref(false)
 
 // Initialize active image
 watchEffect(() => {
-    if (product.value) {
-        activeImage.value = product.value.image || ''
+    if (product.value && product.value.images && product.value.images.length > 0) {
+        activeImage.value = product.value.images[0].url
     }
 })
 

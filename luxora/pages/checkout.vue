@@ -125,7 +125,7 @@ const placeOrder = async () => {
             handler: async function (response) {
                 // 3. Verify Payment & Save Order
                 try {
-                    await $fetch('/api/payment/verify', {
+                    const verifyResponse = await $fetch('/api/payment/verify', {
                         method: 'POST',
                         body: {
                             razorpay_order_id: response.razorpay_order_id,
@@ -136,7 +136,8 @@ const placeOrder = async () => {
                                 productId: item.product.id,
                                 quantity: item.quantity,
                                 price: item.product.price
-                            }))
+                            })),
+                            userId: user.value?.id // Pass user ID if logged in
                         }
                     })
                     orderPlaced.value = true

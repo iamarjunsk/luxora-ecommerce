@@ -4,7 +4,12 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { name, description, price, images, category, stock } = body
+  const { name, description, price, category, stock, images } = body
+
+  // Generate slug
+  const slug = name.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '') + '-' + Date.now().toString().slice(-4)
 
   if (!name || !price) {
     throw createError({
@@ -16,12 +21,13 @@ export default defineEventHandler(async (event) => {
   const product = await prisma.product.create({
     data: {
       name,
-      description: description || '',
+      slug,
+      description,
       price: parseFloat(price),
-      category: category || 'General',
-      stock: parseInt(stock) || 0,
+      category,
+      stock: parseInt(stock),
       images: {
-        create: images && Array.isArray(images) ? images.map((url: string) => ({ url })) : []
+        create: images.map((url: string) => ({ url }))
       }
     },
     include: {
