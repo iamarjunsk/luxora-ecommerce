@@ -22,9 +22,9 @@
 
                 <div v-if="error" class="text-red-500 text-sm text-center">{{ error }}</div>
 
-                <button type="submit"
-                    class="w-full bg-luxora-black text-white py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
-                    SIGN IN
+                <button type="submit" :disabled="loading"
+                    class="w-full bg-luxora-black text-white py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50">
+                    {{ loading ? 'SIGNING IN...' : 'SIGN IN' }}
                 </button>
             </form>
 
@@ -37,25 +37,33 @@
 </template>
 
 <script setup>
-import { useUserStore } from '~/stores/user'
-
-const userStore = useUserStore()
+const { user, fetchUser } = useAuth()
 const router = useRouter()
 
 const email = ref('')
 const password = ref('')
 const error = ref('')
+const loading = ref(false)
 
 const handleLogin = async () => {
-    const success = userStore.login(email.value, password.value)
-    if (success) {
-        if (userStore.isAdmin) {
+    loading.value = true
+    error.value = ''
+    try {
+        await $fetch('/api/auth/login', {
+            method: 'POST',
+            body: { email: email.value, password: password.value }
+        })
+        await fetchUser() // Update auth state
+        
+        if (user.value?.role === 'ADMIN') {
             router.push('/admin')
         } else {
             router.push('/')
         }
-    } else {
-        error.value = 'Invalid credentials'
+    } catch (e) {
+        error.value = e.data?.statusMessage || 'Invalid credentials'
+    } finally {
+        loading.value = false
     }
 }
 </script>

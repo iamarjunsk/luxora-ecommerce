@@ -79,13 +79,68 @@ import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()
 const orderPlaced = ref(false)
+const config = useRuntimeConfig()
 
-const placeOrder = () => {
-    // Simulate API call
-    setTimeout(() => {
-        orderPlaced.value = true
-        cartStore.clearCart()
-    }, 1000)
+// Load Razorpay script
+useHead({
+    script: [
+        {
+            src: 'https://checkout.razorpay.com/v1/checkout.js',
+            async: true,
+            defer: true
+        }
+    ]
+})
+
+const placeOrder = async () => {
+    try {
+        // 1. Create Order
+        const order = await $fetch('/api/payment/create-order', {
+            method: 'POST',
+            body: { amount: cartStore.cartTotal }
+        })
+
+        // 2. Initialize Razorpay
+        const options = {
+            key: 'rzp_test_RjBFABDsXiCAyu', // Replace with env variable in production if possible, but public key is safe here
+            amount: order.amount,
+            currency: order.currency,
+            name: 'Luxora',
+            description: 'Purchase from Luxora',
+            image: '/assets/images/logo.png',
+            order_id: order.id,
+            handler: async function (response) {
+                // 3. Verify Payment
+                try {
+                    await $fetch('/api/payment/verify', {
+                        method: 'POST',
+                        body: {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        }
+                    })
+                    orderPlaced.value = true
+                    cartStore.clearCart()
+                } catch (e) {
+                    alert('Payment verification failed')
+                }
+            },
+            prefill: {
+                name: 'Arjun SK', // In a real app, get from form
+                email: 'arjun@example.com',
+                contact: '9999999999'
+            },
+            theme: {
+                color: '#D4AF37' // Luxora Gold
+            }
+        }
+
+        const rzp1 = new Razorpay(options)
+        rzp1.open()
+    } catch (e) {
+        alert('Failed to initiate payment')
+    }
 }
 </script>
 

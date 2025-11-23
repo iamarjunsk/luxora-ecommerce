@@ -20,18 +20,20 @@ export default defineEventHandler(async (event) => {
   })
 
   if (!user) {
+    console.log('Login failed: User not found', email)
     throw createError({
       statusCode: 401,
-      statusMessage: 'Invalid credentials',
+      statusMessage: 'User not found',
     })
   }
 
   const isValid = await bcrypt.compare(password, user.password)
 
   if (!isValid) {
+    console.log('Login failed: Password mismatch', email)
     throw createError({
       statusCode: 401,
-      statusMessage: 'Invalid credentials',
+      statusMessage: 'Password mismatch',
     })
   }
 

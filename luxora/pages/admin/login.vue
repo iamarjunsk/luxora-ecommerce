@@ -44,6 +44,8 @@ async function login() {
             method: 'POST',
             body: { email: email.value, password: password.value }
         })
+        const { fetchUser } = useAuth()
+        await fetchUser()
         router.push('/admin')
     } catch (e) {
         error.value = e.data?.statusMessage || 'Login failed'

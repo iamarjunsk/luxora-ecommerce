@@ -20,15 +20,15 @@
         <button class="hover:text-luxora-gold transition">
           <MagnifyingGlassIcon class="h-6 w-6" />
         </button>
-        <NuxtLink to="/login" class="hover:text-luxora-gold transition">
+        <NuxtLink :to="user ? (user.role === 'ADMIN' ? '/admin' : '/profile') : '/login'" class="hover:text-luxora-gold transition">
           <UserIcon class="h-6 w-6" />
         </NuxtLink>
-        <button @click="cartStore.toggleCart" class="relative hover:text-luxora-gold transition">
+        <NuxtLink to="/cart" class="relative hover:text-luxora-gold transition">
           <ShoppingBagIcon class="h-6 w-6" />
           <span v-if="cartStore.cartCount > 0" class="absolute -top-2 -right-2 bg-luxora-gold text-luxora-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
             {{ cartStore.cartCount }}
           </span>
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </nav>
@@ -40,6 +40,9 @@ import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()
 const { data: categories } = await useFetch('/api/categories')
+const { user, fetchUser } = useAuth()
+
+await fetchUser()
 
 // Add toggleCart to cart store or handle it here (using a UI state store or just emitting)
 // For now, let's assume we'll add a drawer later.
