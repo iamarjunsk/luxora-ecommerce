@@ -37,12 +37,24 @@ export default defineEventHandler(async (event) => {
                 }
             }
         })
+
+        // Update user address if logged in and address provided
+        if (userId) {
+            await prisma.user.update({
+                where: { id: userId },
+                data: {
+                    address: customer.address,
+                    city: customer.city,
+                    zip: customer.zip
+                }
+            })
+        }
+
         return { success: true, orderId: order.id }
     } catch (error) {
-        console.error('Failed to save order:', error)
         throw createError({
             statusCode: 500,
-            statusMessage: 'Payment verified but failed to save order'
+            statusMessage: 'Failed to create order'
         })
     }
   } else {

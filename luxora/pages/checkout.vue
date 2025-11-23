@@ -75,17 +75,34 @@
 <script setup>
 import { useCartStore } from '~/stores/cart'
 
+definePageMeta({
+    middleware: 'user-auth'
+})
+
 const cartStore = useCartStore()
+const { user } = useAuth()
 const orderPlaced = ref(false)
 const config = useRuntimeConfig()
 
 const customer = ref({
-    firstName: '',
-    lastName: '',
-    email: '',
-    address: '',
-    city: '',
-    zip: ''
+    firstName: user.value?.name?.split(' ')[0] || '',
+    lastName: user.value?.name?.split(' ').slice(1).join(' ') || '',
+    email: user.value?.email || '',
+    address: user.value?.address || '',
+    city: user.value?.city || '',
+    zip: user.value?.zip || ''
+})
+
+// Watch for user changes (e.g. on page load)
+watchEffect(() => {
+    if (user.value) {
+        if (!customer.value.firstName) customer.value.firstName = user.value.name?.split(' ')[0] || ''
+        if (!customer.value.lastName) customer.value.lastName = user.value.name?.split(' ').slice(1).join(' ') || ''
+        if (!customer.value.email) customer.value.email = user.value.email || ''
+        if (!customer.value.address) customer.value.address = user.value.address || ''
+        if (!customer.value.city) customer.value.city = user.value.city || ''
+        if (!customer.value.zip) customer.value.zip = user.value.zip || ''
+    }
 })
 
 // Load Razorpay script

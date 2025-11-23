@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
-    const userId = decoded.userId
+    const userId = decoded.id
 
     const orders = await prisma.order.findMany({
       where: { userId },

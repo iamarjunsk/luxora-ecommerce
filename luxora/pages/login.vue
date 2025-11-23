@@ -28,6 +28,16 @@
                 </button>
             </form>
 
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <NuxtLink to="/register"
+                        class="font-bold text-luxora-gold hover:text-luxora-black transition-colors">
+                        Create one
+                    </NuxtLink>
+                </p>
+            </div>
+
             <div class="mt-8 text-center text-sm text-gray-500">
                 <p>Demo Admin: admin@luxora.com / admin123</p>
                 <p>Demo User: user@luxora.com / user123</p>
@@ -39,6 +49,7 @@
 <script setup>
 const { user, fetchUser } = useAuth()
 const router = useRouter()
+const route = useRoute()
 
 const email = ref('')
 const password = ref('')
@@ -54,11 +65,12 @@ const handleLogin = async () => {
             body: { email: email.value, password: password.value }
         })
         await fetchUser() // Update auth state
-        
+
         if (user.value?.role === 'ADMIN') {
             router.push('/admin')
         } else {
-            router.push('/')
+            const redirect = route.query.redirect
+            router.push(redirect ? redirect : '/')
         }
     } catch (e) {
         error.value = e.data?.statusMessage || 'Invalid credentials'
