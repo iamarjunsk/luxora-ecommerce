@@ -29,9 +29,9 @@
                 <div>
                     <h3 class="font-bold text-sm uppercase tracking-wider mb-4">Price Range</h3>
                     <div class="flex items-center gap-2 text-sm">
-                        <span class="text-gray-500">Min: $0</span>
+                        <span class="text-gray-500">Min: ₹0</span>
                         <span class="text-gray-500">-</span>
-                        <span class="text-gray-500">Max: $5000+</span>
+                        <span class="text-gray-500">Max: ₹5000+</span>
                     </div>
                     <input type="range" min="0" max="5000" class="w-full mt-2 accent-luxora-gold" />
                 </div>
@@ -62,6 +62,12 @@ import { storeToRefs } from 'pinia'
 const route = useRoute()
 const productStore = useProductStore()
 const { products } = storeToRefs(productStore)
+
+// Fetch products if not already loaded or force refresh
+await useAsyncData('shop-products', async () => {
+    await productStore.fetchProducts()
+    return true
+})
 
 const selectedCategory = ref(route.query.category || null)
 

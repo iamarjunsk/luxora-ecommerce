@@ -40,12 +40,12 @@
                 <div class="space-y-4 mb-6 border-b border-gray-200 pb-6">
                     <div v-for="item in cartStore.items" :key="item.product.id" class="flex justify-between text-sm">
                         <span>{{ item.product.name }} x {{ item.quantity }}</span>
-                        <span class="font-medium">${{ (item.product.price * item.quantity).toLocaleString() }}</span>
+                        <span class="font-medium">₹{{ (item.product.price * item.quantity).toLocaleString() }}</span>
                     </div>
                 </div>
                 <div class="flex justify-between text-lg font-serif mb-8">
                     <span>Total</span>
-                    <span>${{ cartStore.cartTotal.toLocaleString() }}</span>
+                    <span>₹{{ cartStore.cartTotal.toLocaleString() }}</span>
                 </div>
                 <button @click="placeOrder"
                     class="block w-full bg-luxora-black text-white py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">

@@ -15,7 +15,7 @@
                                 <NuxtLink :to="`/product/${item.product.id}`" class="hover:text-luxora-gold">{{
                                     item.product.name }}</NuxtLink>
                             </h3>
-                            <p class="font-medium">${{ (item.product.price * item.quantity).toLocaleString() }}</p>
+                            <p class="font-medium">₹{{ (item.product.price * item.quantity).toLocaleString() }}</p>
                         </div>
                         <p class="text-xs text-gray-500 uppercase tracking-wider mb-4">{{ item.product.category }}</p>
 
@@ -42,7 +42,7 @@
                     <div class="space-y-4 mb-6 border-b border-gray-100 pb-6">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium">${{ cartStore.cartTotal.toLocaleString() }}</span>
+                            <span class="font-medium">₹{{ cartStore.cartTotal.toLocaleString() }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Shipping</span>
@@ -52,7 +52,7 @@
 
                     <div class="flex justify-between text-lg font-serif mb-8">
                         <span>Total</span>
-                        <span>${{ cartStore.cartTotal.toLocaleString() }}</span>
+                        <span>₹{{ cartStore.cartTotal.toLocaleString() }}</span>
                     </div>
 
                     <NuxtLink to="/checkout"

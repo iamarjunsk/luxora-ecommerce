@@ -27,7 +27,7 @@
                         </td>
                         <td class="p-4 font-medium">{{ product.name }}</td>
                         <td class="p-4 text-gray-500">{{ product.category }}</td>
-                        <td class="p-4">${{ product.price.toLocaleString() }}</td>
+                        <td class="p-4">₹{{ product.price.toLocaleString() }}</td>
                         <td class="p-4">
                             <button @click="productStore.deleteProduct(product.id)"
                                 class="text-red-500 hover:text-red-700 text-sm font-bold">Delete</button>

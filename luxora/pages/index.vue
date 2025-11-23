@@ -33,29 +33,15 @@
         </section>
 
         <!-- Categories -->
-        <section class="grid grid-cols-1 md:grid-cols-2 h-[600px]">
-            <div class="relative group overflow-hidden">
-                <img src="/assets/images/mens-chain.png" alt="Men's Collection"
+        <section v-if="categories && categories.length > 0" class="grid grid-cols-1 md:grid-cols-2 h-[600px]">
+            <div v-for="category in categories.slice(0, 2)" :key="category.id" class="relative group overflow-hidden">
+                <img :src="category.image || '/assets/images/placeholder-category.jpg'" :alt="category.name"
                     class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div
                     class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
                     <div class="text-center">
-                        <h3 class="text-4xl font-serif text-white mb-4">For Him</h3>
-                        <NuxtLink to="/shop?category=Men"
-                            class="inline-block border-b-2 border-luxora-gold text-white pb-1 hover:text-luxora-gold transition">
-                            View Collection
-                        </NuxtLink>
-                    </div>
-                </div>
-            </div>
-            <div class="relative group overflow-hidden">
-                <img src="/assets/images/womens-necklace.png" alt="Women's Collection"
-                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div
-                    class="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
-                    <div class="text-center">
-                        <h3 class="text-4xl font-serif text-white mb-4">For Her</h3>
-                        <NuxtLink to="/shop?category=Women"
+                        <h3 class="text-4xl font-serif text-white mb-4">{{ category.name }}</h3>
+                        <NuxtLink :to="`/shop?category=${category.name}`"
                             class="inline-block border-b-2 border-luxora-gold text-white pb-1 hover:text-luxora-gold transition">
                             View Collection
                         </NuxtLink>
@@ -72,6 +58,13 @@ import { storeToRefs } from 'pinia'
 
 const productStore = useProductStore()
 const { featuredProducts } = storeToRefs(productStore)
+const { data: categories } = await useFetch('/api/categories')
+
+// Fetch products
+await useAsyncData('products', async () => {
+    await productStore.fetchProducts()
+    return true
+})
 </script>
 
 <style scoped>

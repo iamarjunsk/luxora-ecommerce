@@ -11,8 +11,8 @@
       <div class="hidden md:flex gap-8 text-sm tracking-wide uppercase">
         <NuxtLink to="/" class="hover:text-luxora-gold transition">Home</NuxtLink>
         <NuxtLink to="/shop" class="hover:text-luxora-gold transition">Shop</NuxtLink>
-        <NuxtLink to="/shop?category=Men" class="hover:text-luxora-gold transition">Men</NuxtLink>
-        <NuxtLink to="/shop?category=Women" class="hover:text-luxora-gold transition">Women</NuxtLink>
+        <NuxtLink v-for="category in categories" :key="category.id" :to="`/shop?category=${category.name}`"
+          class="hover:text-luxora-gold transition">{{ category.name }}</NuxtLink>
       </div>
 
       <!-- Icons -->
@@ -39,6 +39,7 @@ import { MagnifyingGlassIcon, UserIcon, ShoppingBagIcon } from '@heroicons/vue/2
 import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()
+const { data: categories } = await useFetch('/api/categories')
 
 // Add toggleCart to cart store or handle it here (using a UI state store or just emitting)
 // For now, let's assume we'll add a drawer later.

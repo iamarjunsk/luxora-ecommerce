@@ -20,7 +20,7 @@
                     {{ product.name }}
                 </NuxtLink>
             </h3>
-            <p class="font-medium text-luxora-charcoal">${{ product.price.toLocaleString() }}</p>
+            <p class="font-medium text-luxora-charcoal">₹{{ product.price.toLocaleString() }}</p>
         </div>
     </div>
 </template>

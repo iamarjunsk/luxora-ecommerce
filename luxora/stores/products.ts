@@ -1,59 +1,66 @@
 import { defineStore } from 'pinia'
 
+interface Product {
+  id: number
+  name: string
+  price: number
+  category: string
+  description: string
+  stock: number
+  createdAt: string
+  updatedAt: string
+  images: { id: number; url: string; productId: number }[]
+  image?: string // Computed property for frontend display
+  featured?: boolean // Optional, might not be in DB yet
+}
+
 export const useProductStore = defineStore('products', {
   state: () => ({
-    products: [
-      {
-        id: 1,
-        name: 'Onyx Signet Ring',
-        price: 250,
-        category: 'Men',
-        image: '/assets/images/mens-ring.png',
-        description: 'A bold statement piece featuring a genuine black onyx stone set in 18k gold.',
-        featured: true
-      },
-      {
-        id: 2,
-        name: 'Royal Cuban Chain',
-        price: 1200,
-        category: 'Men',
-        image: '/assets/images/mens-chain.png',
-        description: 'Heavy 18k gold cuban link chain. The ultimate symbol of luxury and status.',
-        featured: true
-      },
-      {
-        id: 3,
-        name: 'Diamond Solitaire Pendant',
-        price: 850,
-        category: 'Women',
-        image: '/assets/images/womens-necklace.png',
-        description: 'A delicate yet brilliant diamond solitaire pendant on a fine gold chain.',
-        featured: true
-      },
-      {
-        id: 4,
-        name: 'Pearl Drop Earrings',
-        price: 320,
-        category: 'Women',
-        image: '/assets/images/womens-earrings.png',
-        description: 'Classic freshwater pearls suspended from elegant gold hooks.',
-        featured: true
-      }
-    ]
+    products: [] as Product[],
+    currentProduct: null as Product | null,
+    loading: false,
+    error: null as string | null
   }),
   getters: {
-    featuredProducts: (state) => state.products.filter(p => p.featured),
+    featuredProducts: (state) => state.products.filter(p => p.featured || p.id <= 4),
     menProducts: (state) => state.products.filter(p => p.category === 'Men'),
     womenProducts: (state) => state.products.filter(p => p.category === 'Women'),
-    getProductById: (state) => (id) => state.products.find(p => p.id === Number(id))
+    getProductById: (state) => (id: number | string) => state.products.find(p => p.id === Number(id))
   },
   actions: {
-    addProduct(product) {
-      const newId = Math.max(...this.products.map(p => p.id)) + 1
-      this.products.push({ ...product, id: newId })
+    async fetchProducts() {
+      this.loading = true
+      this.error = null
+      try {
+        const data = await $fetch<Product[]>('/api/products')
+        this.products = data.map(p => ({
+          ...p,
+          image: p.images && p.images.length > 0 ? p.images[0].url : '/assets/images/placeholder.png'
+        }))
+      } catch (err: any) {
+        this.error = err.message || 'Failed to fetch products'
+        console.error('Error fetching products:', err)
+      } finally {
+        this.loading = false
+      }
     },
-    deleteProduct(id) {
-      this.products = this.products.filter(p => p.id !== id)
+    async fetchProduct(id: number | string) {
+      this.loading = true
+      this.error = null
+      try {
+        const data = await $fetch<Product>(`/api/products/${id}`)
+        this.currentProduct = {
+            ...data,
+            image: data.images && data.images.length > 0 ? data.images[0].url : '/assets/images/placeholder.png'
+        }
+        return this.currentProduct
+      } catch (err: any) {
+        this.error = err.message || 'Failed to fetch product'
+        console.error('Error fetching product:', err)
+        return null
+      } finally {
+        this.loading = false
+      }
     }
   }
 })
