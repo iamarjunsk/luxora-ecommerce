@@ -4,33 +4,31 @@
 
         <div v-if="!orderPlaced" class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <!-- Form -->
+            <!-- Form -->
             <div class="space-y-6">
                 <h2 class="text-xl font-serif mb-4">Shipping Information</h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="First Name"
+                    <input v-model="customer.firstName" type="text" placeholder="First Name" required
                         class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                    <input type="text" placeholder="Last Name"
+                    <input v-model="customer.lastName" type="text" placeholder="Last Name" required
                         class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
                 </div>
-                <input type="email" placeholder="Email Address"
+                <input v-model="customer.email" type="email" placeholder="Email Address" required
                     class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                <input type="text" placeholder="Address"
+                <input v-model="customer.address" type="text" placeholder="Address" required
                     class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="City"
+                    <input v-model="customer.city" type="text" placeholder="City" required
                         class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                    <input type="text" placeholder="Zip Code"
+                    <input v-model="customer.zip" type="text" placeholder="Zip Code" required
                         class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
                 </div>
 
                 <h2 class="text-xl font-serif mb-4 mt-8">Payment Details</h2>
-                <input type="text" placeholder="Card Number"
-                    class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="MM/YY"
-                        class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                    <input type="text" placeholder="CVC"
-                        class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
+                <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                    <p class="text-sm text-gray-600 mb-2">Secure Payment via Razorpay</p>
+                    <p class="text-xs text-gray-500">You will be redirected to Razorpay to complete your payment
+                        securely.</p>
                 </div>
             </div>
 
@@ -81,6 +79,15 @@ const cartStore = useCartStore()
 const orderPlaced = ref(false)
 const config = useRuntimeConfig()
 
+const customer = ref({
+    firstName: '',
+    lastName: '',
+    email: '',
+    address: '',
+    city: '',
+    zip: ''
+})
+
 // Load Razorpay script
 useHead({
     script: [
@@ -93,6 +100,12 @@ useHead({
 })
 
 const placeOrder = async () => {
+    // Basic validation
+    if (!customer.value.firstName || !customer.value.email || !customer.value.address) {
+        alert('Please fill in all required shipping details')
+        return
+    }
+
     try {
         // 1. Create Order
         const order = await $fetch('/api/payment/create-order', {
@@ -102,7 +115,7 @@ const placeOrder = async () => {
 
         // 2. Initialize Razorpay
         const options = {
-            key: 'rzp_test_RjBFABDsXiCAyu', // Replace with env variable in production if possible, but public key is safe here
+            key: 'rzp_test_RjBFABDsXiCAyu', // Replace with env variable in production
             amount: order.amount,
             currency: order.currency,
             name: 'Luxora',
@@ -110,14 +123,20 @@ const placeOrder = async () => {
             image: '/assets/images/logo.png',
             order_id: order.id,
             handler: async function (response) {
-                // 3. Verify Payment
+                // 3. Verify Payment & Save Order
                 try {
                     await $fetch('/api/payment/verify', {
                         method: 'POST',
                         body: {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
+                            razorpay_signature: response.razorpay_signature,
+                            customer: customer.value,
+                            items: cartStore.items.map(item => ({
+                                productId: item.product.id,
+                                quantity: item.quantity,
+                                price: item.product.price
+                            }))
                         }
                     })
                     orderPlaced.value = true
@@ -127,8 +146,8 @@ const placeOrder = async () => {
                 }
             },
             prefill: {
-                name: 'Arjun SK', // In a real app, get from form
-                email: 'arjun@example.com',
+                name: `${customer.value.firstName} ${customer.value.lastName}`,
+                email: customer.value.email,
                 contact: '9999999999'
             },
             theme: {
