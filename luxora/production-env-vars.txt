@@ -10,10 +10,12 @@ RAZORPAY_KEY_SECRET="your_razorpay_production_secret_key"
 
 NUXT_PUBLIC_BASE_URL="https://your-project-name.vercel.app"
 
-UPLOAD_DIR="./public/uploads"
-
+# Supabase Storage (NEW)
+SUPABASE_URL="https://your-project-ref.supabase.co"
+SUPABASE_KEY="your-service-role-key-or-anon-key"
 
 ⚠️ IMPORTANT NOTES:
-1. Replace RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET with your actual production keys
-2. Update NUXT_PUBLIC_BASE_URL after deploying to Vercel with your actual URL
-3. DO NOT commit this file to git - delete it after copying to Vercel
+1. Replace placeholders with actual values
+2. Create a public bucket named 'products' in Supabase Storage
+3. Add these variables to Vercel Settings -> Environment Variables
+4. DO NOT commit this file to git

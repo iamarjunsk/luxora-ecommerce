@@ -1,5 +1,4 @@
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+import { createClient } from '@supabase/supabase-js'
 
 export default defineEventHandler(async (event) => {
   const files = await readMultipartFormData(event)
@@ -30,7 +29,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { createClient } = await import('@supabase/supabase-js')
   const supabase = createClient(config.supabaseUrl, config.supabaseKey)
 
   const filename = `${Date.now()}-${file.filename}`
