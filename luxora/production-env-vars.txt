@@ -1,0 +1,19 @@
+DATABASE_URL="postgres://postgres.gbgjrssocprhruqytxhe:WbiQVbJWhJQbAn6X@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+
+DIRECT_URL="postgres://postgres.gbgjrssocprhruqytxhe:WbiQVbJWhJQbAn6X@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
+
+JWT_SECRET="c97ae45b4df9cd7bdf3d616a0920d8038fd0f8a1a7051e097a2dcb9c03e1a12b"
+
+RAZORPAY_KEY_ID="rzp_live_xxxxxxxxxxxxx"
+
+RAZORPAY_KEY_SECRET="your_razorpay_production_secret_key"
+
+NUXT_PUBLIC_BASE_URL="https://your-project-name.vercel.app"
+
+UPLOAD_DIR="./public/uploads"
+
+
+⚠️ IMPORTANT NOTES:
+1. Replace RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET with your actual production keys
+2. Update NUXT_PUBLIC_BASE_URL after deploying to Vercel with your actual URL
+3. DO NOT commit this file to git - delete it after copying to Vercel
