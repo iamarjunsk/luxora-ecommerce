@@ -8,8 +8,7 @@
     "dev:host": "nuxt dev --host 0.0.0.0",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "postbuild": "prisma generate"
+    "postinstall": "prisma generate && nuxt prepare"
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
