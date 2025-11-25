@@ -52,3 +52,39 @@ export const verifyAdmin = async (event: H3Event) => {
     })
   }
 }
+
+export const verifyUser = async (event: H3Event) => {
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: No token provided',
+    })
+  }
+
+  try {
+    const config = useRuntimeConfig()
+    const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload
+
+    // Check if user still exists in DB
+    const user = await prisma.user.findUnique({ where: { id: decoded.id } })
+    
+    if (!user) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: 'Unauthorized: User not found',
+      })
+    }
+
+    return user
+  } catch (error: unknown) {
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
+        throw error
+    }
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized: Invalid token',
+    })
+  }
+}

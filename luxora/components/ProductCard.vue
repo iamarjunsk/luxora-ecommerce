@@ -10,6 +10,13 @@
                 class="absolute bottom-4 right-4 bg-luxora-gold text-luxora-black p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-luxora-gold-light">
                 <ShoppingBagIcon class="h-5 w-5" />
             </button>
+
+            <!-- Wishlist Button -->
+            <button @click.prevent="wishlistStore.toggleWishlist(product)"
+                class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-gray-50">
+                <HeartIcon class="h-5 w-5"
+                    :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'" />
+            </button>
         </div>
 
         <!-- Details -->
@@ -26,8 +33,9 @@
 </template>
 
 <script setup>
-import { ShoppingBagIcon } from '@heroicons/vue/24/outline'
+import { ShoppingBagIcon, HeartIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from '~/stores/cart'
+import { useWishlistStore } from '~/stores/wishlist'
 
 const props = defineProps({
     product: {
@@ -38,6 +46,7 @@ const props = defineProps({
 
 const config = useRuntimeConfig()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 
 const addToCart = () => {
     cartStore.addToCart(props.product)

@@ -29,6 +29,13 @@
             class="hover:text-luxora-gold transition">
             <UserIcon class="h-6 w-6" />
           </NuxtLink>
+          <NuxtLink to="/wishlist" class="relative hover:text-luxora-gold transition">
+            <HeartIcon class="h-6 w-6" />
+            <span v-if="wishlistStore.wishlistCount > 0"
+              class="absolute -top-2 -right-2 bg-luxora-gold text-luxora-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              {{ wishlistStore.wishlistCount }}
+            </span>
+          </NuxtLink>
           <NuxtLink to="/cart" class="relative hover:text-luxora-gold transition">
             <ShoppingBagIcon class="h-6 w-6" />
             <span v-if="cartStore.cartCount > 0"
@@ -63,11 +70,13 @@
 </template>
 
 <script setup>
-import { MagnifyingGlassIcon, UserIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, UserIcon, ShoppingBagIcon, HeartIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from '~/stores/cart'
+import { useWishlistStore } from '~/stores/wishlist'
 
 const config = useRuntimeConfig()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const { data: categories } = await useFetch('/api/categories')
 const { user, fetchUser } = useAuth()
 const router = useRouter()
@@ -77,6 +86,9 @@ const searchQuery = ref('')
 const searchInput = ref(null)
 
 await fetchUser()
+if (user.value) {
+  await wishlistStore.fetchWishlist()
+}
 
 const toggleSearch = () => {
   isSearchOpen.value = !isSearchOpen.value

@@ -36,6 +36,11 @@
                         class="flex-grow bg-luxora-black text-white px-8 py-3 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
                         ADD TO CART
                     </button>
+                    <button @click="wishlistStore.toggleWishlist(product)"
+                        class="border border-gray-300 p-3 hover:border-luxora-gold transition-colors duration-300">
+                        <HeartIcon class="h-6 w-6"
+                            :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'" />
+                    </button>
                 </div>
 
                 <div class="border-t border-gray-200 pt-6 space-y-3 text-sm text-gray-500">
@@ -61,10 +66,13 @@
 <script setup>
 import { useProductStore } from '~/stores/products'
 import { useCartStore } from '~/stores/cart'
+import { useWishlistStore } from '~/stores/wishlist'
 import { storeToRefs } from 'pinia'
+import { HeartIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const { showSnackbar } = useSnackbar()
 
 // Fetch product by slug
