@@ -1,7 +1,7 @@
 {
-    "buildCommand": "cd luxora && npm run build",
-    "outputDirectory": "luxora/.output",
-    "installCommand": "cd luxora && npm install",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".output",
+    "installCommand": "npm install",
     "framework": "nuxtjs",
     "regions": [
         "bom1"
