@@ -3,7 +3,11 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center gap-2">
-        <NuxtImg :src="config.public.assets.logo" alt="Luxora" class="h-8 md:h-10" />
+        <div class="logo-container relative shrink-0" style="width: 40px; height: 40px;">
+          <NuxtImg :src="config.public.assets.logo" alt="Luxora"
+            style="max-width: 40px; max-height: 40px; width: 100%; height: 100%; object-fit: contain;" width="40"
+            height="40" />
+        </div>
         <span class="font-serif text-2xl tracking-widest text-luxora-gold">LUXORA</span>
       </NuxtLink>
 
@@ -20,15 +24,19 @@
         <button class="hover:text-luxora-gold transition">
           <MagnifyingGlassIcon class="h-6 w-6" />
         </button>
-        <NuxtLink :to="user ? (user.role === 'ADMIN' ? '/admin' : '/profile') : '/login'" class="hover:text-luxora-gold transition">
-          <UserIcon class="h-6 w-6" />
-        </NuxtLink>
-        <NuxtLink to="/cart" class="relative hover:text-luxora-gold transition">
-          <ShoppingBagIcon class="h-6 w-6" />
-          <span v-if="cartStore.cartCount > 0" class="absolute -top-2 -right-2 bg-luxora-gold text-luxora-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-            {{ cartStore.cartCount }}
-          </span>
-        </NuxtLink>
+        <ClientOnly>
+          <NuxtLink :to="user ? (user.role === 'ADMIN' ? '/admin' : '/profile') : '/login'"
+            class="hover:text-luxora-gold transition">
+            <UserIcon class="h-6 w-6" />
+          </NuxtLink>
+          <NuxtLink to="/cart" class="relative hover:text-luxora-gold transition">
+            <ShoppingBagIcon class="h-6 w-6" />
+            <span v-if="cartStore.cartCount > 0"
+              class="absolute -top-2 -right-2 bg-luxora-gold text-luxora-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              {{ cartStore.cartCount }}
+            </span>
+          </NuxtLink>
+        </ClientOnly>
       </div>
     </div>
   </nav>
@@ -48,3 +56,17 @@ await fetchUser()
 // Add toggleCart to cart store or handle it here (using a UI state store or just emitting)
 // For now, let's assume we'll add a drawer later.
 </script>
+
+<style scoped>
+.logo-container {
+  width: 32px;
+  height: 32px;
+}
+
+@media (min-width: 768px) {
+  .logo-container {
+    width: 40px;
+    height: 40px;
+  }
+}
+</style>
