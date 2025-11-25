@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
                 customerAddress: customer.address,
                 customerCity: customer.city,
                 customerZip: customer.zip,
+                customerPhone: customer.phone,
                 userId: userId || null,
                 items: {
                     create: items.map((item: any) => ({

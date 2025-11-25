@@ -104,9 +104,11 @@
                         <h3 class="font-bold text-gray-900 mb-2">Customer Details</h3>
                         <p class="text-sm text-gray-600">{{ selectedOrder.customerName }}</p>
                         <p class="text-sm text-gray-600">{{ selectedOrder.customerEmail }}</p>
+                        <p v-if="selectedOrder.customerPhone" class="text-sm text-gray-600">{{
+                            selectedOrder.customerPhone }}</p>
                         <p class="text-sm text-gray-600 mt-2">{{ selectedOrder.customerAddress }}</p>
                         <p class="text-sm text-gray-600">{{ selectedOrder.customerCity }}, {{ selectedOrder.customerZip
-                        }}</p>
+                            }}</p>
                     </div>
                     <div>
                         <h3 class="font-bold text-gray-900 mb-2">Payment Info</h3>

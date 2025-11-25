@@ -70,7 +70,8 @@ export const paymentVerifySchema = z.object({
     email: z.string().email(),
     address: z.string().min(1),
     city: z.string().min(1),
-    zip: z.string().min(1)
+    zip: z.string().min(1),
+    phone: z.string().min(10, 'Phone number is required')
   }),
   items: z.array(z.object({
     productId: z.number().int().positive(),

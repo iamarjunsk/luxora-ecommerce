@@ -15,8 +15,12 @@
                 </div>
                 <input v-model="customer.email" type="email" placeholder="Email Address" required
                     class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
-                <input v-model="customer.address" type="text" placeholder="Address" required
-                    class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
+                <div class="grid grid-cols-2 gap-4">
+                    <input v-model="customer.phone" type="tel" placeholder="Phone Number" required
+                        class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
+                    <input v-model="customer.address" type="text" placeholder="Address" required
+                        class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <input v-model="customer.city" type="text" placeholder="City" required
                         class="border border-gray-300 p-3 w-full focus:outline-none focus:border-luxora-gold" />
@@ -45,8 +49,9 @@
                     <span>Total</span>
                     <span>₹{{ cartStore.cartTotal.toLocaleString() }}</span>
                 </div>
-                <button @click="placeOrder"
-                    class="block w-full bg-luxora-black text-white py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
+                <button @click="placeOrder" :disabled="!isFormValid"
+                    :class="{ 'opacity-50 cursor-not-allowed': !isFormValid, 'hover:bg-luxora-gold hover:text-luxora-black': isFormValid }"
+                    class="block w-full bg-luxora-black text-white py-4 font-bold tracking-widest transition-colors duration-300">
                     PLACE ORDER
                 </button>
             </div>
@@ -93,7 +98,18 @@ const customer = ref({
     email: user.value?.email || '',
     address: user.value?.address || '',
     city: user.value?.city || '',
-    zip: user.value?.zip || ''
+    zip: user.value?.zip || '',
+    phone: ''
+})
+
+const isFormValid = computed(() => {
+    return customer.value.firstName &&
+        customer.value.lastName &&
+        customer.value.email &&
+        customer.value.phone &&
+        customer.value.address &&
+        customer.value.city &&
+        customer.value.zip
 })
 
 // Watch for user changes (e.g. on page load)
@@ -105,6 +121,8 @@ watchEffect(() => {
         if (!customer.value.address) customer.value.address = user.value.address || ''
         if (!customer.value.city) customer.value.city = user.value.city || ''
         if (!customer.value.zip) customer.value.zip = user.value.zip || ''
+        // Phone is not currently in user profile, but if added later:
+        // if (!customer.value.phone) customer.value.phone = user.value.phone || ''
     }
 })
 
@@ -169,7 +187,7 @@ const placeOrder = async () => {
             prefill: {
                 name: `${customer.value.firstName} ${customer.value.lastName}`,
                 email: customer.value.email,
-                contact: '9999999999'
+                contact: customer.value.phone
             },
             theme: {
                 color: '#D4AF37' // Luxora Gold
