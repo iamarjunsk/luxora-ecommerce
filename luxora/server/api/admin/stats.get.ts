@@ -44,14 +44,15 @@ export default defineEventHandler(async (event) => {
   // 5. Sales Trend (Last 7 Days)
   const sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  sevenDaysAgo.setHours(0, 0, 0, 0) // Start of day
 
-  const salesTrendRaw = await prisma.order.groupBy({
-    by: ['createdAt'],
+  const paidOrders = await prisma.order.findMany({
     where: {
       createdAt: { gte: sevenDaysAgo },
       status: 'PAID'
     },
-    _sum: {
+    select: {
+      createdAt: true,
       total: true
     }
   })
@@ -64,10 +65,10 @@ export default defineEventHandler(async (event) => {
     salesTrendMap.set(d.toISOString().split('T')[0], 0)
   }
 
-  salesTrendRaw.forEach(item => {
-    const date = item.createdAt.toISOString().split('T')[0]
+  paidOrders.forEach(order => {
+    const date = order.createdAt.toISOString().split('T')[0]
     if (salesTrendMap.has(date)) {
-      salesTrendMap.set(date, (salesTrendMap.get(date) || 0) + (item._sum.total || 0))
+      salesTrendMap.set(date, (salesTrendMap.get(date) || 0) + order.total)
     }
   })
 
