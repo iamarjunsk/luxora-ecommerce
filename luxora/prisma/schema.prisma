@@ -23,6 +23,7 @@ model User {
   zip       String?
   orders    Order[]
   wishlist  Wishlist[]
+  reviews   Review[]
 }
 
 model Product {
@@ -39,6 +40,7 @@ model Product {
   images      ProductImage[]
   OrderItem   OrderItem[]
   wishlist    Wishlist[]
+  reviews     Review[]
 }
 
 model ProductImage {
@@ -100,6 +102,20 @@ model Wishlist {
   productId Int
   product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int      // 1-5 stars
+  comment   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, productId])
 }

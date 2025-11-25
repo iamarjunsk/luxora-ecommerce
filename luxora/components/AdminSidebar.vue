@@ -14,6 +14,14 @@
                 :class="{ 'bg-luxora-charcoal text-luxora-gold': route.path.includes('/admin/products') }">
                 Products
             </NuxtLink>
+            <NuxtLink to="/admin/orders" class="block py-3 px-4 rounded hover:bg-luxora-charcoal transition"
+                :class="{ 'bg-luxora-charcoal text-luxora-gold': route.path.includes('/admin/orders') }">
+                Orders
+            </NuxtLink>
+            <NuxtLink to="/admin/reviews" class="block py-3 px-4 rounded hover:bg-luxora-charcoal transition"
+                :class="{ 'bg-luxora-charcoal text-luxora-gold': route.path.includes('/admin/reviews') }">
+                Reviews
+            </NuxtLink>
             <NuxtLink to="/"
                 class="block py-3 px-4 rounded hover:bg-luxora-charcoal transition mt-8 text-gray-400 hover:text-white">
                 View Shop

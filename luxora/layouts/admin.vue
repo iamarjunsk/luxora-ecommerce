@@ -22,6 +22,10 @@
                     active-class="bg-gray-800 border-l-4 border-gold-500">
                     Categories
                 </NuxtLink>
+                <NuxtLink to="/admin/reviews" class="block py-3 px-6 hover:bg-gray-800 transition-colors"
+                    active-class="bg-gray-800 border-l-4 border-gold-500">
+                    Reviews
+                </NuxtLink>
 
                 <button @click="logout"
                     class="w-full text-left py-3 px-6 hover:bg-gray-800 transition-colors text-red-400">

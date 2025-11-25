@@ -54,6 +54,70 @@
             </div>
         </div>
 
+        <!-- Reviews Section -->
+        <div class="mt-16 border-t border-gray-200 pt-12">
+            <h2 class="text-2xl font-serif mb-2">Customer Reviews</h2>
+            <div v-if="reviewsData" class="flex items-center gap-4 mb-8">
+                <StarRating :rating="reviewsData.averageRating" readonly size="lg" />
+                <span class="text-xl font-medium">{{ reviewsData.averageRating.toFixed(1) }}</span>
+                <span class="text-gray-500">({{ reviewsData.totalReviews }} {{ reviewsData.totalReviews === 1 ? 'review'
+                    : 'reviews' }})</span>
+            </div>
+
+            <!-- Review Form (Verified Buyers Only) -->
+            <div v-if="canReview" class="bg-gray-50 p-6 rounded-lg mb-8">
+                <h3 class="text-lg font-semibold mb-4">Write a Review</h3>
+                <form @submit.prevent="submitReview">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Your Rating</label>
+                        <StarRating v-model:rating="newReview.rating" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2">Your Review</label>
+                        <textarea v-model="newReview.comment" rows="4"
+                            class="w-full border border-gray-300 rounded p-3 focus:outline-none focus:border-luxora-gold"
+                            placeholder="Share your thoughts about this product..." required minlength="10"></textarea>
+                    </div>
+                    <button type="submit" :disabled="submittingReview || newReview.rating === 0"
+                        class="bg-luxora-black text-white px-6 py-2 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Reviews List -->
+            <div v-if="reviewsData && reviewsData.reviews.length > 0" class="space-y-6">
+                <div v-for="review in reviewsData.reviews" :key="review.id" class="border-b border-gray-100 pb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 bg-luxora-gold text-luxora-black rounded-full flex items-center justify-center font-bold">
+                                {{ review.user.name?.charAt(0) || 'U' }}
+                            </div>
+                            <div>
+                                <p class="font-medium">{{ review.user.name || 'Anonymous' }}</p>
+                                <StarRating :rating="review.rating" readonly size="sm" />
+                            </div>
+                        </div>
+                        <span class="text-sm text-gray-500">{{ new Date(review.createdAt).toLocaleDateString() }}</span>
+                    </div>
+                    <p class="text-gray-700 mt-3">{{ review.comment }}</p>
+                </div>
+            </div>
+            <div v-else-if="reviewsData" class="text-center py-12 text-gray-500">
+                <p>No reviews yet. Be the first to review this product!</p>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div v-if="relatedProducts.length > 0" class="mt-16">
+            <h2 class="text-2xl font-serif mb-8 text-center">You May Also Like</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id"
+                    :product="relatedProduct" />
+            </div>
+        </div>
+
         <!-- Image Viewer -->
         <ImageViewer :is-open="isViewerOpen" :image-url="activeImage" @close="isViewerOpen = false" />
     </div>
@@ -102,4 +166,69 @@ const addToCart = () => {
         showSnackbar('Added to cart successfully!', 'success')
     }
 }
+
+// Fetch related products from the same category
+const { data: relatedProductsData } = await useFetch('/api/products', {
+    query: {
+        category: product.value.category,
+        limit: 4
+    }
+})
+
+// Filter out the current product from related products
+const relatedProducts = computed(() => {
+    if (!relatedProductsData.value) return []
+    return relatedProductsData.value.filter(p => p.id !== product.value?.id).slice(0, 4)
+})
+
+// Reviews functionality
+const { data: reviewsData, refresh: refreshReviews } = await useFetch(`/api/reviews/${product.value.id}`)
+
+const newReview = ref({
+    rating: 0,
+    comment: ''
+})
+
+const submittingReview = ref(false)
+const canReview = ref(false)
+
+// Check if user can review (has purchased the product)
+const checkCanReview = () => {
+    const { user } = useAuth()
+    // Show form to logged-in users, API will handle verification
+    canReview.value = !!user.value
+}
+
+onMounted(() => {
+    checkCanReview()
+})
+
+const submitReview = async () => {
+    if (newReview.value.rating === 0) {
+        showSnackbar('Please select a rating', 'error')
+        return
+    }
+
+    submittingReview.value = true
+    try {
+        await $fetch(`/api/reviews/${product.value.id}`, {
+            method: 'POST',
+            body: {
+                rating: newReview.value.rating,
+                comment: newReview.value.comment
+            }
+        })
+
+        showSnackbar('Review submitted successfully!', 'success')
+        newReview.value = { rating: 0, comment: '' }
+        await refreshReviews()
+    } catch (error) {
+        const message = error.data?.statusMessage || 'Failed to submit review'
+        showSnackbar(message, 'error')
+    } finally {
+        submittingReview.value = false
+    }
+}
+
+
 </script>
