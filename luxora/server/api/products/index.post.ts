@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { name, description, price, category, stock, images } = result.data
+  const { name, description, price, category, stock, images, isFeatured } = result.data
 
   // Generate slug
   const slug = name.toLowerCase()
@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
       price,
       category,
       stock,
+      isFeatured,
       images: {
         create: images?.map((url: string) => ({ url })) || []
       }

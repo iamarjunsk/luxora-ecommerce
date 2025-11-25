@@ -23,7 +23,7 @@
                 <tbody class="divide-y divide-gray-100">
                     <tr v-for="product in productStore.products" :key="product.id" class="hover:bg-gray-50 transition">
                         <td class="p-4">
-                            <img :src="product.image" class="w-12 h-12 object-cover rounded bg-gray-100" />
+                            <NuxtImg :src="product.image" class="w-12 h-12 object-cover rounded bg-gray-100" />
                         </td>
                         <td class="p-4 font-medium">{{ product.name }}</td>
                         <td class="p-4 text-gray-500">{{ product.category }}</td>

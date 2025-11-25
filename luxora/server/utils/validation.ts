@@ -17,7 +17,8 @@ export const productCreateSchema = z.object({
   price: z.coerce.number().positive('Price must be positive'),
   stock: z.coerce.number().int().nonnegative('Stock must be non-negative'),
   category: z.string().min(1, 'Category is required'),
-  images: z.array(z.string().url('Invalid image URL')).optional()
+  images: z.array(z.string().url('Invalid image URL')).optional(),
+  isFeatured: z.boolean().optional().default(false)
 })
 
 export const productUpdateSchema = z.object({
@@ -26,7 +27,8 @@ export const productUpdateSchema = z.object({
   price: z.coerce.number().positive().optional(),
   stock: z.coerce.number().int().nonnegative().optional(),
   category: z.string().min(1).optional(),
-  images: z.array(z.string().url()).optional()
+  images: z.array(z.string().url()).optional(),
+  isFeatured: z.boolean().optional()
 })
 
 export const categoryCreateSchema = z.object({

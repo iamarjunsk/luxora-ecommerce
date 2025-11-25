@@ -35,8 +35,15 @@
                     <label class="block text-sm font-medium text-gray-700">Category</label>
                     <select v-model="form.category"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-gold-500 focus:border-gold-500 sm:text-sm p-2 border">
-                        <option v-for="category in categories" :key="category.id" :value="category.name">{{ category.name }}</option>
+                        <option v-for="category in categories" :key="category.id" :value="category.name">{{
+                            category.name }}</option>
                     </select>
+                </div>
+
+                <div class="flex items-center">
+                    <input v-model="form.isFeatured" type="checkbox"
+                        class="h-4 w-4 text-gold-600 focus:ring-gold-500 border-gray-300 rounded">
+                    <label class="ml-2 block text-sm text-gray-900">Featured Product</label>
                 </div>
 
                 <!-- Multiple Images Section -->
@@ -76,7 +83,8 @@
                         <p class="text-sm text-gray-700 font-medium">Added Images ({{ form.images.length }}):</p>
                         <div class="grid grid-cols-3 gap-4">
                             <div v-for="(imageUrl, index) in form.images" :key="index" class="relative">
-                                <NuxtImg :src="imageUrl" alt="Product" class="h-24 w-full object-cover rounded-md border" />
+                                <NuxtImg :src="imageUrl" alt="Product"
+                                    class="h-24 w-full object-cover rounded-md border" />
                                 <button type="button" @click="removeImage(index)"
                                     class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,6 +131,7 @@ const form = reactive({
     price: '',
     stock: '',
     category: '',
+    isFeatured: false,
     images: []
 })
 

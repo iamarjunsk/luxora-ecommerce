@@ -11,7 +11,7 @@ interface Product {
   updatedAt: string
   images: { id: number; url: string; productId: number }[]
   image?: string // Computed property for frontend display
-  featured?: boolean // Optional, might not be in DB yet
+  isFeatured: boolean
 }
 
 export const useProductStore = defineStore('products', {
@@ -22,17 +22,17 @@ export const useProductStore = defineStore('products', {
     error: null as string | null
   }),
   getters: {
-    featuredProducts: (state) => state.products.filter(p => p.featured || p.id <= 4),
+    featuredProducts: (state) => state.products.filter(p => p.isFeatured),
     menProducts: (state) => state.products.filter(p => p.category === 'Men'),
     womenProducts: (state) => state.products.filter(p => p.category === 'Women'),
     getProductById: (state) => (id: number | string) => state.products.find(p => p.id === Number(id))
   },
   actions: {
-    async fetchProducts() {
+    async fetchProducts(params: any = {}) {
       this.loading = true
       this.error = null
       try {
-        const data = await $fetch<Product[]>('/api/products')
+        const data = await $fetch<Product[]>('/api/products', { params })
         const config = useRuntimeConfig()
         this.products = data.map(p => ({
           ...p,

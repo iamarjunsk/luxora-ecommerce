@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { name, description, price, images, category, stock } = result.data
+  const { name, description, price, images, category, stock, isFeatured } = result.data
 
   // Transaction to update product and replace images
   const product = await prisma.$transaction(async (tx) => {
@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
         price,
         category,
         stock,
+        isFeatured,
       },
     })
 

@@ -1,11 +1,10 @@
 <template>
     <div class="bg-luxora-cream">
         <!-- Hero Section -->
-        <section class="relative h-screen flex items-center justify-center overflow-hidden"
-            style="position: relative; height: 100vh; overflow: hidden;">
-            <div class="absolute inset-0" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+        <section class="relative h-screen flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0">
                 <NuxtImg :src="config.public.assets.hero" alt="Luxora Jewelry" class="h-full w-full object-cover"
-                    style="width: 100%; height: 100%; object-fit: cover;" width="1920" height="1080" />
+                    width="1920" height="1080" />
                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
             </div>
             <div class="relative text-center text-white px-6 max-w-5xl mx-auto z-10">
@@ -167,8 +166,8 @@ const { featuredProducts } = storeToRefs(productStore)
 const { data: categories } = await useFetch('/api/categories')
 
 // Fetch products
-await useAsyncData('products', async () => {
-    await productStore.fetchProducts()
+await useAsyncData('featured-products', async () => {
+    await productStore.fetchProducts({ featured: true, limit: 4 })
     return true
 })
 

@@ -62,9 +62,9 @@ export default defineEventHandler(async (event) => {
     return {
       url: `/uploads/${folder}/${filename}`
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Upload error:', error)
-    if (error.statusCode) {
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
       throw error
     }
     throw createError({
