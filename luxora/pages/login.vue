@@ -38,10 +38,7 @@
                 </p>
             </div>
 
-            <div class="mt-8 text-center text-sm text-gray-500">
-                <p>Demo Admin: admin@luxora.com / admin123</p>
-                <p>Demo User: user@luxora.com / user123</p>
-            </div>
+
         </div>
     </div>
 </template>
