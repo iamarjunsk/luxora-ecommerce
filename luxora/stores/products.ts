@@ -33,9 +33,10 @@ export const useProductStore = defineStore('products', {
       this.error = null
       try {
         const data = await $fetch<Product[]>('/api/products')
+        const config = useRuntimeConfig()
         this.products = data.map(p => ({
           ...p,
-          image: p.images && p.images.length > 0 ? p.images[0].url : '/assets/images/placeholder.png'
+          image: p.images?.[0]?.url || config.public.assets.placeholder.default
         }))
       } catch (err: any) {
         this.error = err.message || 'Failed to fetch products'
@@ -49,9 +50,10 @@ export const useProductStore = defineStore('products', {
       this.error = null
       try {
         const data = await $fetch<Product>(`/api/products/${id}`)
+        const config = useRuntimeConfig()
         this.currentProduct = {
             ...data,
-            image: data.images && data.images.length > 0 ? data.images[0].url : '/assets/images/placeholder.png'
+            image: data.images?.[0]?.url || config.public.assets.placeholder.default
         }
         return this.currentProduct
       } catch (err: any) {

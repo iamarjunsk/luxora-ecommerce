@@ -3,7 +3,7 @@
         <!-- Hero Section -->
         <section class="relative h-screen flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0">
-                <img src="/assets/images/hero.png" alt="Luxora Jewelry" class="h-full w-full object-cover" />
+                <NuxtImg :src="config.public.assets.hero" alt="Luxora Jewelry" class="h-full w-full object-cover" />
                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
             </div>
             <div class="relative text-center text-white px-6 max-w-5xl mx-auto z-10">
@@ -66,7 +66,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div v-for="(category, index) in categories" :key="category.id"
                     :class="['relative group overflow-hidden h-[350px] cursor-pointer', index === 0 ? 'md:col-span-2 lg:col-span-2' : '']">
-                    <img :src="category.image || '/assets/images/placeholder-category.jpg'" :alt="category.name"
+                    <NuxtImg :src="category.image || config.public.assets.placeholder.category" :alt="category.name"
                         class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
@@ -121,7 +121,7 @@
                     attention to detail is remarkable."</h2>
                 <div class="flex justify-center items-center gap-4">
                     <div class="w-12 h-12 bg-gray-600 rounded-full overflow-hidden">
-                        <img src="https://i.pravatar.cc/150?img=32" alt="Customer" class="w-full h-full object-cover" />
+                        <NuxtImg src="https://i.pravatar.cc/150?img=32" alt="Customer" class="w-full h-full object-cover" />
                     </div>
                     <div class="text-left">
                         <p class="font-bold text-luxora-gold">Sarah Jenkins</p>
@@ -155,7 +155,10 @@
 import { useProductStore } from '~/stores/products'
 import { storeToRefs } from 'pinia'
 import { ShieldCheckIcon, TruckIcon, SparklesIcon, StarIcon } from '@heroicons/vue/24/outline'
+import { useSnackbar } from '~/composables/useSnackbar'
 
+const config = useRuntimeConfig()
+const { showSnackbar } = useSnackbar()
 const productStore = useProductStore()
 const { featuredProducts } = storeToRefs(productStore)
 const { data: categories } = await useFetch('/api/categories')
@@ -167,7 +170,7 @@ await useAsyncData('products', async () => {
 })
 
 const subscribe = () => {
-    alert('Thank you for subscribing!')
+    showSnackbar('Thank you for subscribing!', 'success')
 }
 </script>
 

@@ -1,22 +1,22 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '~/server/utils/prisma'
+import { categoryCreateSchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  const result = categoryCreateSchema.safeParse(body)
 
-  if (!body.name) {
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Name is required'
+      statusMessage: result.error.issues[0].message
     })
   }
 
   try {
     const category = await prisma.category.create({
       data: {
-        name: body.name,
-        image: body.image
+        name: result.data.name,
+        image: result.data.image
       }
     })
     return category

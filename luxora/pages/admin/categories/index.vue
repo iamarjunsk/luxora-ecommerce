@@ -65,8 +65,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="category in categories" :key="category.id">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <img v-if="category.image" :src="category.image" :alt="category.name"
-                                class="h-16 w-16 object-cover rounded">
+                            <NuxtImg v-if="category.image" :src="category.image" :alt="category.name"
+                                class="h-16 w-16 object-cover rounded" />
                             <div v-else
                                 class="h-16 w-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
                                 No Image

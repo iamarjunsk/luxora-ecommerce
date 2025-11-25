@@ -169,6 +169,7 @@ definePageMeta({
 })
 
 const { data: orders, refresh } = await useFetch('/api/orders')
+const { showSnackbar } = useSnackbar()
 const selectedOrder = ref(null)
 
 function viewOrderDetails(order) {
@@ -182,9 +183,9 @@ async function updateStatus(order) {
             body: { deliveryStatus: order.deliveryStatus }
         })
         await refresh()
-        // Optional: Show success toast
+        showSnackbar('Status updated successfully', 'success')
     } catch (e) {
-        alert('Failed to update status')
+        showSnackbar('Failed to update status', 'error')
     }
 }
 </script>

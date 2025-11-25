@@ -1,18 +1,20 @@
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { prisma } from '~/server/utils/prisma'
 
-const prisma = new PrismaClient()
+import { registerSchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { name, email, password } = body
+  const result = registerSchema.safeParse(body)
 
-  if (!name || !email || !password) {
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Name, email, and password are required'
+      statusMessage: result.error.issues[0].message
     })
   }
+
+  const { name, email, password } = result.data
 
   // Check if user already exists
   const existingUser = await prisma.user.findUnique({

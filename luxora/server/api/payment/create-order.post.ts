@@ -1,20 +1,25 @@
 import Razorpay from 'razorpay'
+import { razorpayOrderCreateSchema } from '~/server/utils/validation'
+
+const config = useRuntimeConfig()
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!
+  key_id: config.public.razorpayKeyId,
+  key_secret: config.razorpayKeySecret
 })
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { amount, currency = 'INR' } = body
+  const result = razorpayOrderCreateSchema.safeParse(body)
 
-  if (!amount) {
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Amount is required'
+      statusMessage: result.error.issues[0].message
     })
   }
+
+  const { amount, currency = 'INR' } = result.data
 
   const options = {
     amount: Math.round(amount * 100), // amount in the smallest currency unit

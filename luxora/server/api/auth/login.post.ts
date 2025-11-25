@@ -1,19 +1,21 @@
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { prisma } from '~/server/utils/prisma'
 
-const prisma = new PrismaClient()
+import { loginSchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { email, password } = body
+  const result = loginSchema.safeParse(body)
 
-  if (!email || !password) {
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Email and password are required',
+      statusMessage: result.error.issues[0].message,
     })
   }
+
+  const { email, password } = result.data
 
   const user = await prisma.user.findUnique({
     where: { email },
@@ -37,9 +39,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const config = useRuntimeConfig()
   const token = jwt.sign(
     { id: user.id, email: user.email, role: user.role },
-    process.env.JWT_SECRET || 'secret',
+    config.jwtSecret,
     { expiresIn: '1d' }
   )
 

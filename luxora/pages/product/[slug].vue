@@ -5,13 +5,13 @@
             <div class="flex flex-col gap-4">
                 <div class="bg-white border border-gray-100 p-4 aspect-square overflow-hidden cursor-zoom-in"
                     @click="isViewerOpen = true">
-                    <img :src="activeImage" :alt="product.name" class="w-full h-full object-cover object-center" />
+                    <NuxtImg :src="activeImage" :alt="product.name" class="w-full h-full object-cover object-center" />
                 </div>
                 <div v-if="product.images && product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2">
                     <button v-for="img in product.images" :key="img.id" @click="activeImage = img.url"
                         class="w-20 h-20 flex-shrink-0 border-2 transition-colors duration-200 overflow-hidden"
                         :class="activeImage === img.url ? 'border-luxora-gold' : 'border-transparent hover:border-gray-200'">
-                        <img :src="img.url" :alt="product.name" class="w-full h-full object-cover" />
+                        <NuxtImg :src="img.url" :alt="product.name" class="w-full h-full object-cover" />
                     </button>
                 </div>
             </div>

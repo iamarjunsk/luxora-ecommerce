@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
 import jwt from 'jsonwebtoken'
-
-const prisma = new PrismaClient()
+import { prisma } from '~/server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'auth_token')
@@ -11,7 +9,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
+    const config = useRuntimeConfig()
+    const decoded = jwt.verify(token, config.jwtSecret) as any
     const userId = decoded.id
 
     const orders = await prisma.order.findMany({

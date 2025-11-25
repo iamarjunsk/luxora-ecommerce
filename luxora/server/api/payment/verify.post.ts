@@ -1,14 +1,23 @@
 import crypto from 'crypto'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '~/server/utils/prisma'
+import { paymentVerifySchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customer, items, userId } = body
+  const result = paymentVerifySchema.safeParse(body)
 
+  if (!result.success) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: result.error.issues[0].message
+    })
+  }
+
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customer, items, userId } = result.data
+
+  const config = useRuntimeConfig()
   const generated_signature = crypto
-    .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+    .createHmac('sha256', config.razorpayKeySecret)
     .update(razorpay_order_id + '|' + razorpay_payment_id)
     .digest('hex')
 

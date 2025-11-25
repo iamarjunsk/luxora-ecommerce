@@ -27,8 +27,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="product in products" :key="product.id">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <img :src="product.images?.[0]?.url || 'https://placehold.co/100'" alt=""
-                                class="h-10 w-10 rounded-full object-cover">
+                            <NuxtImg :src="product.images?.[0]?.url || 'https://placehold.co/100'" alt=""
+                                class="h-10 w-10 rounded-full object-cover" />
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
@@ -60,6 +60,7 @@ definePageMeta({
 })
 
 const { data: products, refresh } = await useFetch('/api/products')
+const { showSnackbar } = useSnackbar()
 
 async function deleteProduct(id) {
     if (!confirm('Are you sure you want to delete this product?')) return
@@ -67,8 +68,9 @@ async function deleteProduct(id) {
     try {
         await $fetch(`/api/products/${id}`, { method: 'DELETE' })
         refresh()
+        showSnackbar('Product deleted successfully', 'success')
     } catch (e) {
-        alert('Failed to delete product')
+        showSnackbar('Failed to delete product', 'error')
     }
 }
 </script>

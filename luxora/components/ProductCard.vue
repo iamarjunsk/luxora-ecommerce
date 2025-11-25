@@ -2,7 +2,7 @@
     <div class="group relative bg-white border border-gray-100 hover:shadow-xl transition-shadow duration-300">
         <!-- Image -->
         <div class="aspect-square overflow-hidden bg-gray-100 relative">
-            <img :src="product.images?.[0]?.url || '/assets/images/placeholder-product.jpg'" :alt="product.name"
+            <NuxtImg :src="product.images?.[0]?.url || config.public.assets.placeholder.product" :alt="product.name"
                 class="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500" />
 
             <!-- Quick Add Button (Visible on Hover) -->
@@ -36,6 +36,7 @@ const props = defineProps({
     }
 })
 
+const config = useRuntimeConfig()
 const cartStore = useCartStore()
 
 const addToCart = () => {

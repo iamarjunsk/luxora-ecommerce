@@ -12,6 +12,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const file = files[0]
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+  if (!file.type || !allowedTypes.includes(file.type)) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'
+    })
+  }
+
   const filename = `${Date.now()}-${file.filename}`
   const filePath = join(process.cwd(), 'public', 'uploads', filename)
 

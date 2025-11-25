@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '~/server/utils/prisma'
+import { categoryUpdateSchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id
@@ -13,10 +12,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!body.name) {
+  const result = categoryUpdateSchema.safeParse(body)
+
+  if (!result.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Name is required'
+      statusMessage: result.error.issues[0].message
     })
   }
 
@@ -26,8 +27,8 @@ export default defineEventHandler(async (event) => {
         id: parseInt(id)
       },
       data: {
-        name: body.name,
-        image: body.image
+        name: result.data.name,
+        image: result.data.image
       }
     })
     return category

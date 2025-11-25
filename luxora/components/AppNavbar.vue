@@ -3,7 +3,7 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center gap-2">
-        <img src="/assets/images/logo.png" alt="Luxora" class="h-8 md:h-10" />
+        <NuxtImg :src="config.public.assets.logo" alt="Luxora" class="h-8 md:h-10" />
         <span class="font-serif text-2xl tracking-widest text-luxora-gold">LUXORA</span>
       </NuxtLink>
 
@@ -38,6 +38,7 @@
 import { MagnifyingGlassIcon, UserIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import { useCartStore } from '~/stores/cart'
 
+const config = useRuntimeConfig()
 const cartStore = useCartStore()
 const { data: categories } = await useFetch('/api/categories')
 const { user, fetchUser } = useAuth()

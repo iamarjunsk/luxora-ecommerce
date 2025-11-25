@@ -74,12 +74,15 @@
 
 <script setup>
 import { useCartStore } from '~/stores/cart'
+import { useSnackbar } from '~/composables/useSnackbar'
 
 definePageMeta({
     middleware: 'user-auth'
 })
 
 const cartStore = useCartStore()
+const { showSnackbar } = useSnackbar()
+const router = useRouter()
 const { user } = useAuth()
 const orderPlaced = ref(false)
 const config = useRuntimeConfig()
@@ -119,7 +122,7 @@ useHead({
 const placeOrder = async () => {
     // Basic validation
     if (!customer.value.firstName || !customer.value.email || !customer.value.address) {
-        alert('Please fill in all required shipping details')
+        showSnackbar('Please fill in all required shipping details', 'error')
         return
     }
 
@@ -132,12 +135,12 @@ const placeOrder = async () => {
 
         // 2. Initialize Razorpay
         const options = {
-            key: 'rzp_test_RjBFABDsXiCAyu', // Replace with env variable in production
+            key: config.public.razorpayKeyId,
             amount: order.amount,
             currency: order.currency,
             name: 'Luxora',
             description: 'Purchase from Luxora',
-            image: '/assets/images/logo.png',
+            image: config.public.assets.logo,
             order_id: order.id,
             handler: async function (response) {
                 // 3. Verify Payment & Save Order
@@ -160,7 +163,7 @@ const placeOrder = async () => {
                     orderPlaced.value = true
                     cartStore.clearCart()
                 } catch (e) {
-                    alert('Payment verification failed')
+                    showSnackbar('Payment verification failed', 'error')
                 }
             },
             prefill: {
@@ -176,7 +179,7 @@ const placeOrder = async () => {
         const rzp1 = new Razorpay(options)
         rzp1.open()
     } catch (e) {
-        alert('Failed to initiate payment')
+        showSnackbar('Failed to initiate payment', 'error')
     }
 }
 </script>

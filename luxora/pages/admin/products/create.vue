@@ -76,7 +76,7 @@
                         <p class="text-sm text-gray-700 font-medium">Added Images ({{ form.images.length }}):</p>
                         <div class="grid grid-cols-3 gap-4">
                             <div v-for="(imageUrl, index) in form.images" :key="index" class="relative">
-                                <img :src="imageUrl" alt="Product" class="h-24 w-full object-cover rounded-md border">
+                                <NuxtImg :src="imageUrl" alt="Product" class="h-24 w-full object-cover rounded-md border" />
                                 <button type="button" @click="removeImage(index)"
                                     class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,6 +111,7 @@ definePageMeta({
 })
 
 const router = useRouter()
+const { showSnackbar } = useSnackbar()
 const loading = ref(false)
 const uploading = ref(false)
 const imageInputType = ref('url')
@@ -158,8 +159,9 @@ async function handleFileUpload(event) {
         })
         form.images.push(response.url)
         event.target.value = '' // Reset input
+        showSnackbar('Image uploaded successfully', 'success')
     } catch (e) {
-        alert('Failed to upload image')
+        showSnackbar('Failed to upload image', 'error')
     } finally {
         uploading.value = false
     }
@@ -167,7 +169,7 @@ async function handleFileUpload(event) {
 
 async function saveProduct() {
     if (form.images.length === 0) {
-        alert('Please add at least one image')
+        showSnackbar('Please add at least one image', 'error')
         return
     }
 
@@ -177,9 +179,10 @@ async function saveProduct() {
             method: 'POST',
             body: form
         })
+        showSnackbar('Product created successfully', 'success')
         router.push('/admin/products')
     } catch (e) {
-        alert('Failed to save product')
+        showSnackbar('Failed to save product', 'error')
     } finally {
         loading.value = false
     }

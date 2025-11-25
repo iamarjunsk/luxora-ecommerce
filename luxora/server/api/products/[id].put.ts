@@ -1,15 +1,26 @@
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+
+import { prisma } from '~/server/utils/prisma'
+import { productUpdateSchema } from '~/server/utils/validation'
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id
   const body = await readBody(event)
-  const { name, description, price, images, category, stock } = body
-
+  
   if (!id) {
     throw createError({ statusCode: 400, statusMessage: 'ID required' })
   }
+
+  const result = productUpdateSchema.safeParse(body)
+
+  if (!result.success) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: result.error.issues[0].message,
+    })
+  }
+
+  const { name, description, price, images, category, stock } = result.data
 
   // Transaction to update product and replace images
   const product = await prisma.$transaction(async (tx) => {
@@ -19,9 +30,9 @@ export default defineEventHandler(async (event) => {
       data: {
         name,
         description,
-        price: parseFloat(price),
+        price,
         category,
-        stock: parseInt(stock),
+        stock,
       },
     })
 

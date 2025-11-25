@@ -12,7 +12,7 @@
 
       <!-- Image -->
       <div class="relative max-w-[90vw] max-h-[90vh]" @click.stop>
-        <img :src="imageUrl" alt="Full screen view" class="max-w-full max-h-[90vh] object-contain shadow-2xl" />
+        <NuxtImg :src="imageUrl" alt="Full screen view" class="max-w-full max-h-[90vh] object-contain shadow-2xl" />
       </div>
     </div>
   </Transition>
