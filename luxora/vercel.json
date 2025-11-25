@@ -1,4 +1,3 @@
-```json
 {
     "buildCommand": "cd luxora && npm run build",
     "outputDirectory": "luxora/.output",
@@ -8,4 +7,3 @@
         "bom1"
     ]
 }
-```
