@@ -1,8 +1,0 @@
--- CreateTable
-CREATE TABLE "Visitor" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "ip" TEXT NOT NULL,
-    "city" TEXT,
-    "country" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
