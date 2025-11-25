@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "prebuild": "npx prisma generate",
     "dev": "nuxt dev",
     "dev:host": "nuxt dev --host 0.0.0.0",
     "generate": "nuxt generate",
