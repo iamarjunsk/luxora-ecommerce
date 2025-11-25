@@ -21,12 +21,43 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const filename = `${Date.now()}-${file.filename}`
-  const filePath = join(process.cwd(), 'public', 'uploads', filename)
+  const config = useRuntimeConfig()
+  
+  if (!config.supabaseUrl || !config.supabaseKey) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Supabase credentials not configured'
+    })
+  }
 
-  await writeFile(filePath, file.data)
+  const { createClient } = await import('@supabase/supabase-js')
+  const supabase = createClient(config.supabaseUrl, config.supabaseKey)
+
+  const filename = `${Date.now()}-${file.filename}`
+  
+  const { data, error } = await supabase
+    .storage
+    .from('products')
+    .upload(filename, file.data, {
+      contentType: file.type,
+      upsert: false
+    })
+
+  if (error) {
+    console.error('Supabase upload error:', error)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to upload file to storage'
+    })
+  }
+
+  // Get public URL
+  const { data: { publicUrl } } = supabase
+    .storage
+    .from('products')
+    .getPublicUrl(filename)
 
   return {
-    url: `/uploads/${filename}`,
+    url: publicUrl
   }
 })

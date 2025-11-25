@@ -22,6 +22,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     jwtSecret: process.env.JWT_SECRET || 'secret',
     razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET,
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseKey: process.env.SUPABASE_KEY,
     public: {
       razorpayKeyId: process.env.RAZORPAY_KEY_ID,
       assets: {
