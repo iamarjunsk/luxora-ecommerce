@@ -21,7 +21,7 @@
 
       <!-- Icons -->
       <div class="flex items-center gap-6">
-        <button class="hover:text-luxora-gold transition">
+        <button @click="toggleSearch" class="hover:text-luxora-gold transition">
           <MagnifyingGlassIcon class="h-6 w-6" />
         </button>
         <ClientOnly>
@@ -39,6 +39,26 @@
         </ClientOnly>
       </div>
     </div>
+
+    <!-- Search Bar -->
+    <div v-if="isSearchOpen"
+      class="absolute top-full left-0 w-full bg-white text-black p-6 shadow-lg border-t border-gray-100 animate-fade-in-down">
+      <div class="container mx-auto relative max-w-3xl">
+        <input v-model="searchQuery" @keyup.enter="handleSearch" type="text" placeholder="Search for products..."
+          class="w-full border-b-2 border-gray-200 py-3 text-xl focus:outline-none focus:border-luxora-gold transition-colors"
+          ref="searchInput" />
+        <button @click="handleSearch"
+          class="absolute right-0 top-4 text-luxora-gold font-bold uppercase tracking-widest text-sm hover:text-luxora-black transition">
+          Search
+        </button>
+        <button @click="isSearchOpen = false" class="absolute -right-12 top-4 text-gray-400 hover:text-red-500">
+          <span class="sr-only">Close</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
   </nav>
 </template>
 
@@ -50,11 +70,30 @@ const config = useRuntimeConfig()
 const cartStore = useCartStore()
 const { data: categories } = await useFetch('/api/categories')
 const { user, fetchUser } = useAuth()
+const router = useRouter()
+
+const isSearchOpen = ref(false)
+const searchQuery = ref('')
+const searchInput = ref(null)
 
 await fetchUser()
 
-// Add toggleCart to cart store or handle it here (using a UI state store or just emitting)
-// For now, let's assume we'll add a drawer later.
+const toggleSearch = () => {
+  isSearchOpen.value = !isSearchOpen.value
+  if (isSearchOpen.value) {
+    nextTick(() => {
+      searchInput.value?.focus()
+    })
+  }
+}
+
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    router.push({ path: '/shop', query: { search: searchQuery.value } })
+    isSearchOpen.value = false
+    searchQuery.value = ''
+  }
+}
 </script>
 
 <style scoped>
@@ -67,6 +106,22 @@ await fetchUser()
   .logo-container {
     width: 40px;
     height: 40px;
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 </style>

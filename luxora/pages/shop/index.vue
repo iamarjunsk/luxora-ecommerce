@@ -55,8 +55,7 @@
                 </div>
                 <div v-else class="text-center py-20 bg-gray-50 rounded-lg">
                     <p class="text-gray-500 mb-4">No products found matching your criteria.</p>
-                    <button @click="selectCategory(null); priceRange = 100000"
-                        class="text-luxora-gold hover:underline">Clear Filters</button>
+                    <button @click="clearFilters" class="text-luxora-gold hover:underline">Clear Filters</button>
                 </div>
             </div>
         </div>
@@ -77,8 +76,10 @@ const { data: categories } = await useFetch('/api/categories')
 
 // Fetch products
 await useAsyncData('shop-products', async () => {
-    await productStore.fetchProducts()
+    await productStore.fetchProducts({ search: route.query.search })
     return true
+}, {
+    watch: [() => route.query.search]
 })
 
 // State
@@ -100,6 +101,14 @@ const selectCategory = (categoryName) => {
         const query = { ...route.query }
         delete query.category
         router.push({ query })
+    }
+}
+
+const clearFilters = () => {
+    selectCategory(null)
+    priceRange.value = 100000
+    if (route.query.search) {
+        router.push({ path: '/shop' })
     }
 }
 
@@ -134,6 +143,7 @@ const filteredProducts = computed(() => {
 })
 
 const pageTitle = computed(() => {
+    if (route.query.search) return `Search Results for "${route.query.search}"`
     return selectedCategory.value ? `${selectedCategory.value}` : 'All Products'
 })
 </script>

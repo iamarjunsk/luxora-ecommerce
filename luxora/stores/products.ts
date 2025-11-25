@@ -31,9 +31,9 @@ export const useProductStore = defineStore('products', {
     async fetchProducts(params: any = {}) {
       this.loading = true
       this.error = null
+      const config = useRuntimeConfig()
       try {
         const data = await $fetch<Product[]>('/api/products', { params })
-        const config = useRuntimeConfig()
         this.products = data.map(p => ({
           ...p,
           image: p.images?.[0]?.url || config.public.assets.placeholder.default
@@ -48,9 +48,9 @@ export const useProductStore = defineStore('products', {
     async fetchProduct(id: number | string) {
       this.loading = true
       this.error = null
+      const config = useRuntimeConfig()
       try {
         const data = await $fetch<Product>(`/api/products/${id}`)
-        const config = useRuntimeConfig()
         this.currentProduct = {
             ...data,
             image: data.images?.[0]?.url || config.public.assets.placeholder.default
