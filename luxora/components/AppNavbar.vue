@@ -4,11 +4,14 @@
       <!-- Left Section: Mobile Menu Button & Desktop Menu -->
       <div class="flex items-center">
         <!-- Mobile Menu Button (Left) -->
-        <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="md:hidden hover:text-luxora-gold transition-colors mr-4 focus:outline-none">
-          <svg v-if="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+          class="md:hidden hover:text-luxora-gold transition-colors mr-4 focus:outline-none">
+          <svg v-if="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -17,22 +20,27 @@
         <div class="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase">
           <NuxtLink to="/" class="hover:text-luxora-gold transition-colors relative group">
             Home
-            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxora-gold transition-all duration-300 group-hover:w-full"></span>
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxora-gold transition-all duration-300 group-hover:w-full"></span>
           </NuxtLink>
           <NuxtLink to="/shop" class="hover:text-luxora-gold transition-colors relative group">
             Shop
-            <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxora-gold transition-all duration-300 group-hover:w-full"></span>
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-luxora-gold transition-all duration-300 group-hover:w-full"></span>
           </NuxtLink>
           <div class="relative group">
             <button class="hover:text-luxora-gold transition-colors flex items-center gap-1">
               Categories
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <!-- Dropdown -->
-            <div class="absolute top-full left-0 w-48 bg-white shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-              <NuxtLink v-for="category in categories" :key="category.id" :to="`/shop?category=${encodeURIComponent(category.name)}`"
+            <div
+              class="absolute top-full left-0 w-48 bg-white shadow-lg border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <NuxtLink v-for="category in categories" :key="category.id"
+                :to="`/shop?category=${encodeURIComponent(category.name)}`"
                 class="block px-4 py-2 hover:bg-gray-50 hover:text-luxora-gold transition-colors">
                 {{ category.name }}
               </NuxtLink>
@@ -44,8 +52,7 @@
       <!-- Logo (Center) -->
       <NuxtLink to="/" class="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
         <div class="w-28 md:w-40">
-          <NuxtImg :src="config.public.assets.logo" alt="Luxora"
-            class="w-full h-auto object-contain" />
+          <NuxtImg :src="config.public.assets.logo" alt="Luxora" class="w-full h-auto object-contain" />
         </div>
       </NuxtLink>
 
@@ -78,21 +85,18 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="transform -translate-x-full opacity-0"
-      enter-to-class="transform translate-x-0 opacity-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="transform translate-x-0 opacity-100"
-      leave-to-class="transform -translate-x-full opacity-0"
-    >
+    <Transition enter-active-class="transition duration-300 ease-out"
+      enter-from-class="transform -translate-x-full opacity-0" enter-to-class="transform translate-x-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in" leave-from-class="transform translate-x-0 opacity-100"
+      leave-to-class="transform -translate-x-full opacity-0">
       <div v-if="isMobileMenuOpen" class="fixed inset-0 bg-white z-40 flex flex-col md:hidden">
         <!-- Header -->
         <div class="h-20 flex items-center justify-between px-6 border-b border-gray-100">
           <span class="text-sm font-bold uppercase tracking-widest text-luxora-black">Menu</span>
           <button @click="isMobileMenuOpen = false" class="text-gray-400 hover:text-luxora-black transition-colors">
             <span class="sr-only">Close</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -103,11 +107,11 @@
           <div class="flex flex-col gap-8">
             <!-- Main Links -->
             <div class="flex flex-col gap-6">
-              <NuxtLink to="/" @click="isMobileMenuOpen = false" 
+              <NuxtLink to="/" @click="isMobileMenuOpen = false"
                 class="text-3xl font-serif text-luxora-black hover:text-luxora-gold transition-colors">
                 Home
               </NuxtLink>
-              <NuxtLink to="/shop" @click="isMobileMenuOpen = false" 
+              <NuxtLink to="/shop" @click="isMobileMenuOpen = false"
                 class="text-3xl font-serif text-luxora-black hover:text-luxora-gold transition-colors">
                 Shop All
               </NuxtLink>
@@ -115,21 +119,18 @@
 
             <!-- Categories (Expandable) -->
             <div class="pt-6 border-t border-gray-100">
-              <button @click="isCollectionsOpen = !isCollectionsOpen" 
+              <button @click="isCollectionsOpen = !isCollectionsOpen"
                 class="w-full flex items-center justify-between text-xs font-bold uppercase tracking-widest text-gray-400 mb-6 focus:outline-none group">
                 Collections
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                  class="h-4 w-4 transition-transform duration-300"
-                  :class="{ 'rotate-180': isCollectionsOpen }"
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300"
+                  :class="{ 'rotate-180': isCollectionsOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
+
               <div v-show="isCollectionsOpen" class="flex flex-col gap-4 pl-2 transition-all duration-300">
-                <NuxtLink v-for="category in categories" :key="category.id" 
-                  :to="`/shop?category=${encodeURIComponent(category.name)}`"
-                  @click="isMobileMenuOpen = false"
+                <NuxtLink v-for="category in categories" :key="category.id"
+                  :to="`/shop?category=${encodeURIComponent(category.name)}`" @click="isMobileMenuOpen = false"
                   class="text-lg text-gray-600 hover:text-luxora-black transition-colors flex items-center justify-between group">
                   {{ category.name }}
                   <span class="w-0 h-px bg-luxora-black transition-all duration-300 group-hover:w-4"></span>
@@ -142,12 +143,12 @@
         <!-- Footer -->
         <div class="p-6 bg-gray-50 border-t border-gray-100">
           <div class="flex flex-col gap-4">
-            <NuxtLink to="/login" @click="isMobileMenuOpen = false" 
+            <NuxtLink to="/login" @click="isMobileMenuOpen = false"
               class="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-luxora-black hover:text-luxora-gold transition-colors">
               <UserIcon class="h-5 w-5" />
               Sign In / Register
             </NuxtLink>
-            <NuxtLink to="/wishlist" @click="isMobileMenuOpen = false" 
+            <NuxtLink to="/wishlist" @click="isMobileMenuOpen = false"
               class="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-luxora-black hover:text-luxora-gold transition-colors">
               <HeartIcon class="h-5 w-5" />
               Wishlist
@@ -168,7 +169,8 @@
           class="absolute right-0 top-6 text-xs font-bold uppercase tracking-widest hover:text-luxora-gold transition-colors">
           Search
         </button>
-        <button @click="isSearchOpen = false" class="absolute -right-12 top-6 text-gray-400 hover:text-luxora-black transition-colors">
+        <button @click="isSearchOpen = false"
+          class="absolute -right-12 top-6 text-gray-400 hover:text-luxora-black transition-colors">
           <span class="sr-only">Close</span>
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
