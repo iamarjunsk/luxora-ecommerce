@@ -33,8 +33,9 @@
         <!-- Categories -->
         <section v-if="categories && categories.length > 0" class="py-16 bg-white container mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div v-for="(category, index) in categories" :key="category.id"
-                    class="relative group overflow-hidden h-[300px] cursor-pointer">
+                <NuxtLink v-for="(category, index) in categories" :key="category.id"
+                    :to="`/shop?category=${encodeURIComponent(category.name)}`"
+                    class="relative group overflow-hidden h-[300px] cursor-pointer block">
                     <NuxtImg :src="category.image || config.public.assets.placeholder.category" :alt="category.name"
                         class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
@@ -43,7 +44,7 @@
                             {{ category.name }}
                         </h3>
                     </div>
-                </div>
+                </NuxtLink>
             </div>
         </section>
 
