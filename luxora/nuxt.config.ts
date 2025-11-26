@@ -14,9 +14,13 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Exquisite jewelry for men and women.' }
       ],
       link: [
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap' }
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap' },
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
       ]
     }
+  },
+  build: {
+    transpile: ['@supabase/supabase-js']
   },
   css: ['./assets/css/main.css'],
   runtimeConfig: {

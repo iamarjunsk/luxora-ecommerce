@@ -2,7 +2,9 @@
   <footer class="bg-luxora-black text-luxora-gray py-12 border-t border-luxora-charcoal">
     <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
-        <h3 class="text-luxora-gold font-serif text-xl mb-4">LUXORA</h3>
+        <div class="mb-6 w-40">
+          <NuxtImg :src="config.public.assets.logo" alt="Luxora" class="w-full h-auto" />
+        </div>
         <p class="text-sm leading-relaxed">
           Premium jewelry for the modern individual. Elevate your style with our exquisite collection.
         </p>
@@ -58,3 +60,7 @@
     </div>
   </footer>
 </template>
+
+<script setup>
+const config = useRuntimeConfig()
+</script>

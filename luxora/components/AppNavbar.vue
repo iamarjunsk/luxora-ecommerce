@@ -1,14 +1,12 @@
 <template>
   <nav class="bg-luxora-black text-luxora-cream sticky top-0 z-50 border-b border-luxora-charcoal">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="container mx-auto px-6 py-1 flex justify-between items-center">
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center gap-2">
-        <div class="logo-container relative shrink-0" style="width: 40px; height: 40px;">
+        <div class="logo-container relative shrink-0">
           <NuxtImg :src="config.public.assets.logo" alt="Luxora"
-            style="max-width: 40px; max-height: 40px; width: 100%; height: 100%; object-fit: contain;" width="40"
-            height="40" />
+            style="width: 100%; height: 100%; object-fit: contain;" />
         </div>
-        <span class="font-serif text-2xl tracking-widest text-luxora-gold">LUXORA</span>
       </NuxtLink>
 
       <!-- Desktop Menu -->
@@ -110,14 +108,14 @@ const handleSearch = () => {
 
 <style scoped>
 .logo-container {
-  width: 32px;
-  height: 32px;
+  width: 120px;
+  height: auto;
 }
 
 @media (min-width: 768px) {
   .logo-container {
-    width: 40px;
-    height: 40px;
+    width: 160px;
+    height: auto;
   }
 }
 
