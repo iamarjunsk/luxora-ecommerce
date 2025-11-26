@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "npx prisma generate && nuxt build",
+    "build": "./scripts/build-prod.sh",
     "dev": "nuxt dev",
     "dev:host": "nuxt dev --host 0.0.0.0",
     "generate": "nuxt generate",
