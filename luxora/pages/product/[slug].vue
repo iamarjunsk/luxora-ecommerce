@@ -1,129 +1,148 @@
 <template>
-    <div v-if="product" class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
-            <!-- Image Gallery -->
-            <div class="flex flex-col gap-4">
-                <div class="bg-white border border-gray-100 p-4 aspect-square overflow-hidden cursor-zoom-in"
-                    @click="isViewerOpen = true">
-                    <NuxtImg :src="activeImage" :alt="product.name" class="w-full h-full object-cover object-center" />
-                </div>
-                <div v-if="product.images && product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2">
-                    <button v-for="img in product.images" :key="img.id" @click="activeImage = img.url"
-                        class="w-20 h-20 flex-shrink-0 border-2 transition-colors duration-200 overflow-hidden"
-                        :class="activeImage === img.url ? 'border-luxora-gold' : 'border-transparent hover:border-gray-200'">
-                        <NuxtImg :src="img.url" :alt="product.name" class="w-full h-full object-cover" />
-                    </button>
-                </div>
-            </div>
-
-            <!-- Details -->
-            <div class="flex flex-col justify-center">
-                <p class="text-sm text-luxora-gray uppercase tracking-wider mb-2">{{ product.category }}</p>
-                <h1 class="text-4xl md:text-5xl font-serif text-luxora-black mb-4">{{ product.name }}</h1>
-                <p class="text-2xl font-medium text-luxora-gold mb-8">₹{{ product.price.toLocaleString() }}</p>
-
-                <p class="text-gray-600 leading-relaxed mb-8 text-lg">
-                    {{ product.description }}
-                </p>
-
-                <div class="flex gap-4 mb-8">
-                    <div class="flex items-center border border-gray-300">
-                        <button @click="quantity > 1 ? quantity-- : null" class="px-4 py-2 hover:bg-gray-100">-</button>
-                        <span class="px-4 py-2 font-medium">{{ quantity }}</span>
-                        <button @click="quantity++" class="px-4 py-2 hover:bg-gray-100">+</button>
+    <div v-if="product" class="bg-white min-h-screen">
+        <div class="container mx-auto px-6 py-12">
+            <div class="flex flex-col lg:flex-row gap-12 lg:gap-24">
+                <!-- Image Gallery (Left) -->
+                <div class="w-full lg:w-3/5 flex flex-col gap-6">
+                    <!-- Main Image -->
+                    <div class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative group cursor-zoom-in" 
+                        @click="isViewerOpen = true">
+                        <NuxtImg :src="activeImage || config.public.assets.placeholder.product" :alt="product.name" 
+                            class="w-full h-full object-cover object-center transition-transform duration-700" />
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
                     </div>
-                    <button @click="addToCart"
-                        class="flex-grow bg-luxora-black text-white px-8 py-3 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
-                        ADD TO CART
-                    </button>
-                    <button @click="wishlistStore.toggleWishlist(product)"
-                        class="border border-gray-300 p-3 hover:border-luxora-gold transition-colors duration-300">
-                        <HeartIcon class="h-6 w-6"
-                            :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'" />
-                    </button>
+
+                    <!-- Thumbnails -->
+                    <div v-if="product.images && product.images.length > 1" class="grid grid-cols-4 gap-4">
+                        <button v-for="(img, index) in product.images" :key="img.id" 
+                            @click="activeImage = img.url"
+                            class="aspect-[3/4] overflow-hidden border-2 transition-all duration-300"
+                            :class="activeImage === img.url ? 'border-luxora-black opacity-100' : 'border-transparent opacity-70 hover:opacity-100'">
+                            <NuxtImg :src="img.url" :alt="`${product.name} - Thumbnail ${index + 1}`" 
+                                class="w-full h-full object-cover object-center" />
+                        </button>
+                    </div>
                 </div>
 
-                <div class="border-t border-gray-200 pt-6 space-y-3 text-sm text-gray-500">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                        In Stock & Ready to Ship
-                    </div>
-                    <p>Free shipping on orders over ₹500.</p>
-                    <p>30-day money-back guarantee.</p>
-                </div>
-            </div>
-        </div>
+                <!-- Details (Right - Sticky) -->
+                <div class="w-full lg:w-2/5">
+                    <div class="sticky top-24">
+                        <div class="mb-8 border-b border-gray-100 pb-8">
+                            <p class="text-sm text-gray-500 uppercase tracking-widest mb-3">{{ product.category }}</p>
+                            <h1 class="text-3xl md:text-4xl lg:text-5xl font-serif text-luxora-black mb-4 leading-tight">{{ product.name }}</h1>
+                            <p class="text-2xl font-medium text-gray-900">₹{{ product.price.toLocaleString() }}</p>
+                        </div>
 
-        <!-- Reviews Section -->
-        <div class="mt-16 border-t border-gray-200 pt-12">
-            <h2 class="text-2xl font-serif mb-2">Customer Reviews</h2>
-            <div v-if="reviewsData" class="flex items-center gap-4 mb-8">
-                <StarRating :rating="reviewsData.averageRating" readonly size="lg" />
-                <span class="text-xl font-medium">{{ reviewsData.averageRating.toFixed(1) }}</span>
-                <span class="text-gray-500">({{ reviewsData.totalReviews }} {{ reviewsData.totalReviews === 1 ? 'review'
-                    : 'reviews' }})</span>
-            </div>
+                        <div class="mb-8">
+                            <p class="text-gray-600 leading-relaxed text-base font-light">
+                                {{ product.description }}
+                            </p>
+                        </div>
 
-            <!-- Review Form (Verified Buyers Only) -->
-            <div v-if="canReview" class="bg-gray-50 p-6 rounded-lg mb-8">
-                <h3 class="text-lg font-semibold mb-4">Write a Review</h3>
-                <form @submit.prevent="submitReview">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Your Rating</label>
-                        <StarRating v-model:rating="newReview.rating" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Your Review</label>
-                        <textarea v-model="newReview.comment" rows="4"
-                            class="w-full border border-gray-300 rounded p-3 focus:outline-none focus:border-luxora-gold"
-                            placeholder="Share your thoughts about this product..." required minlength="10"></textarea>
-                    </div>
-                    <button type="submit" :disabled="submittingReview || newReview.rating === 0"
-                        class="bg-luxora-black text-white px-6 py-2 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
-                    </button>
-                </form>
-            </div>
-
-            <!-- Reviews List -->
-            <div v-if="reviewsData && reviewsData.reviews.length > 0" class="space-y-6">
-                <div v-for="review in reviewsData.reviews" :key="review.id" class="border-b border-gray-100 pb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-10 h-10 bg-luxora-gold text-luxora-black rounded-full flex items-center justify-center font-bold">
-                                {{ review.user.name?.charAt(0) || 'U' }}
+                        <div class="flex flex-col gap-4 mb-8">
+                            <div class="flex gap-4">
+                                <div class="flex items-center border border-gray-200 w-32">
+                                    <button @click="quantity > 1 ? quantity-- : null" 
+                                        class="w-10 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors">-</button>
+                                    <span class="flex-grow text-center font-medium">{{ quantity }}</span>
+                                    <button @click="quantity++" 
+                                        class="w-10 h-12 flex items-center justify-center hover:bg-gray-50 transition-colors">+</button>
+                                </div>
+                                <button @click="wishlistStore.toggleWishlist(product)"
+                                    class="border border-gray-200 w-12 h-12 flex items-center justify-center hover:border-luxora-black transition-colors duration-300 group">
+                                    <HeartIcon class="h-6 w-6 transition-colors"
+                                        :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400 group-hover:text-luxora-black'" />
+                                </button>
                             </div>
-                            <div>
-                                <p class="font-medium">{{ review.user.name || 'Anonymous' }}</p>
-                                <StarRating :rating="review.rating" readonly size="sm" />
+                            
+                            <button @click="addToCart"
+                                class="w-full bg-luxora-black text-white py-4 text-sm font-bold tracking-widest uppercase hover:bg-luxora-gold hover:text-luxora-black transition-all duration-300">
+                                [ Add to Bag ]
+                            </button>
+                        </div>
+
+                        <div class="space-y-4 text-xs text-gray-500 uppercase tracking-wider border-t border-gray-100 pt-6">
+                            <div class="flex items-center gap-3">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                In Stock & Ready to Ship
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <TruckIcon class="h-4 w-4" />
+                                Free shipping on orders over ₹500
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <ShieldCheckIcon class="h-4 w-4" />
+                                30-day money-back guarantee
                             </div>
                         </div>
-                        <span class="text-sm text-gray-500">{{ new Date(review.createdAt).toLocaleDateString() }}</span>
                     </div>
-                    <p class="text-gray-700 mt-3">{{ review.comment }}</p>
                 </div>
             </div>
-            <div v-else-if="reviewsData" class="text-center py-12 text-gray-500">
-                <p>No reviews yet. Be the first to review this product!</p>
+
+            <!-- Reviews Section -->
+            <div class="mt-24 max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-serif mb-4">Customer Reviews</h2>
+                    <div v-if="reviewsData" class="flex items-center justify-center gap-2">
+                        <StarRating :rating="reviewsData.averageRating" readonly size="md" />
+                        <span class="text-gray-500 text-sm">Based on {{ reviewsData.totalReviews }} reviews</span>
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <div v-if="canReview" class="bg-gray-50 p-8 mb-12">
+                    <h3 class="font-serif text-xl mb-6">Write a Review</h3>
+                    <form @submit.prevent="submitReview">
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2">Rating</label>
+                            <StarRating v-model:rating="newReview.rating" />
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold uppercase tracking-wider mb-2">Review</label>
+                            <textarea v-model="newReview.comment" rows="4"
+                                class="w-full bg-white border-0 focus:ring-1 focus:ring-luxora-black p-4 text-sm"
+                                placeholder="Share your thoughts..." required minlength="10"></textarea>
+                        </div>
+                        <button type="submit" :disabled="submittingReview || newReview.rating === 0"
+                            class="bg-luxora-black text-white px-8 py-3 text-xs font-bold tracking-widest uppercase hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50">
+                            {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Reviews List -->
+                <div v-if="reviewsData && reviewsData.reviews.length > 0" class="space-y-8">
+                    <div v-for="review in reviewsData.reviews" :key="review.id" class="border-b border-gray-100 pb-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="font-bold text-sm uppercase tracking-wider mb-1">{{ review.user.name || 'Anonymous' }}</p>
+                                <StarRating :rating="review.rating" readonly size="sm" />
+                            </div>
+                            <span class="text-xs text-gray-400">{{ new Date(review.createdAt).toLocaleDateString() }}</span>
+                        </div>
+                        <p class="text-gray-600 font-light leading-relaxed">{{ review.comment }}</p>
+                    </div>
+                </div>
+                <div v-else-if="reviewsData" class="text-center py-12 text-gray-400 italic">
+                    No reviews yet. Be the first to review this product.
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div v-if="relatedProducts.length > 0" class="mt-24 border-t border-gray-200 pt-16">
+                <h2 class="text-3xl font-serif mb-12 text-center">You May Also Like</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id"
+                        :product="relatedProduct" />
+                </div>
             </div>
         </div>
-
-        <!-- Related Products -->
-        <div v-if="relatedProducts.length > 0" class="mt-16">
-            <h2 class="text-2xl font-serif mb-8 text-center">You May Also Like</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id"
-                    :product="relatedProduct" />
-            </div>
-        </div>
-
-        <!-- Image Viewer -->
-        <ImageViewer :is-open="isViewerOpen" :image-url="activeImage" @close="isViewerOpen = false" />
     </div>
-    <div v-else class="container mx-auto px-6 py-20 text-center">
-        <h1 class="text-2xl font-serif mb-4">Product Not Found</h1>
-        <NuxtLink to="/shop" class="text-luxora-gold hover:underline">Return to Shop</NuxtLink>
+    <div v-else class="container mx-auto px-6 py-32 text-center">
+        <h1 class="text-3xl font-serif mb-6">Product Not Found</h1>
+        <NuxtLink to="/shop" class="inline-block border-b border-luxora-black pb-1 text-sm font-bold uppercase tracking-widest hover:text-luxora-gold hover:border-luxora-gold transition-all">
+            Return to Shop
+        </NuxtLink>
     </div>
 </template>
 

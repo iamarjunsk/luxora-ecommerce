@@ -1,44 +1,62 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-luxora-cream">
-        <div class="bg-white p-12 shadow-xl border border-gray-100 w-full max-w-md">
-            <div class="text-center mb-8">
-                <h1 class="font-serif text-3xl mb-2">Welcome Back</h1>
-                <p class="text-gray-500">Sign in to your account</p>
+    <div class="min-h-screen flex flex-col md:flex-row bg-white">
+        <!-- Image Section (Left) -->
+        <div class="w-full md:w-1/2 h-64 md:h-screen relative overflow-hidden">
+            <NuxtImg src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop" 
+                alt="Login to Luxora" 
+                class="w-full h-full object-cover object-center" />
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute bottom-12 left-12 text-white p-6 hidden md:block">
+                <h2 class="text-4xl font-serif mb-2">Welcome Back.</h2>
+                <p class="text-lg font-light tracking-wide">Continue your journey with Luxora.</p>
             </div>
+        </div>
 
-            <form @submit.prevent="handleLogin" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-bold mb-2 uppercase tracking-wider">Email</label>
-                    <input v-model="email" type="email"
-                        class="w-full border border-gray-300 p-3 focus:outline-none focus:border-luxora-gold"
-                        required />
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2 uppercase tracking-wider">Password</label>
-                    <input v-model="password" type="password"
-                        class="w-full border border-gray-300 p-3 focus:outline-none focus:border-luxora-gold"
-                        required />
+        <!-- Form Section (Right) -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8 md:p-24">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-12">
+                    <h1 class="font-serif text-3xl md:text-4xl mb-3 text-luxora-black">Sign In</h1>
+                    <p class="text-gray-500 text-sm uppercase tracking-wider">Access your account</p>
                 </div>
 
-                <div v-if="error" class="text-red-500 text-sm text-center">{{ error }}</div>
+                <form @submit.prevent="handleLogin" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider text-luxora-black">Email Address</label>
+                        <input v-model="email" type="email"
+                            class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-luxora-black transition-colors bg-transparent"
+                            placeholder="name@example.com"
+                            required />
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-luxora-black">Password</label>
+                            <a href="#" class="text-xs text-gray-400 hover:text-luxora-black transition-colors">Forgot?</a>
+                        </div>
+                        <input v-model="password" type="password"
+                            class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-luxora-black transition-colors bg-transparent"
+                            placeholder="••••••••"
+                            required />
+                    </div>
 
-                <button type="submit" :disabled="loading"
-                    class="w-full bg-luxora-black text-white py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50">
-                    {{ loading ? 'SIGNING IN...' : 'SIGN IN' }}
-                </button>
-            </form>
+                    <div v-if="error" class="text-red-500 text-sm text-center py-2">{{ error }}</div>
 
-            <div class="mt-6 text-center">
-                <p class="text-sm text-gray-600">
-                    Don't have an account?
-                    <NuxtLink to="/register"
-                        class="font-bold text-luxora-gold hover:text-luxora-black transition-colors">
-                        Create one
-                    </NuxtLink>
-                </p>
+                    <button type="submit" :disabled="loading"
+                        class="w-full bg-luxora-black text-white py-4 text-sm font-bold tracking-widest uppercase hover:bg-luxora-gold hover:text-luxora-black transition-all duration-300 disabled:opacity-50 mt-8">
+                        {{ loading ? 'Signing In...' : 'Sign In' }}
+                    </button>
+                </form>
+
+                <div class="mt-12 text-center border-t border-gray-100 pt-8">
+                    <p class="text-sm text-gray-500">
+                        New to Luxora?
+                        <NuxtLink to="/register"
+                            class="font-bold text-luxora-black hover:text-luxora-gold transition-colors ml-1 uppercase tracking-wider text-xs border-b border-luxora-black pb-0.5 hover:border-luxora-gold">
+                            Create Account
+                        </NuxtLink>
+                    </p>
+                </div>
             </div>
-
-
         </div>
     </div>
 </template>

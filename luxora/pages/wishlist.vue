@@ -16,7 +16,7 @@
 import { useWishlistStore } from '~/stores/wishlist'
 
 definePageMeta({
-    middleware: 'auth'
+    middleware: 'user-auth'
 })
 
 const wishlistStore = useWishlistStore()

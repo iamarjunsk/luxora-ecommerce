@@ -61,7 +61,7 @@
 
 <script setup>
 definePageMeta({
-    middleware: 'auth'
+    middleware: 'user-auth'
 })
 
 const { user } = useAuth()
