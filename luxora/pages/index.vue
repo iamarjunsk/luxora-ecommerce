@@ -1,107 +1,85 @@
 <template>
-    <div class="bg-luxora-cream">
+    <div class="bg-white">
         <!-- Hero Section -->
-        <section class="relative h-screen flex items-center justify-center overflow-hidden">
-            <div class="absolute inset-0">
-                <NuxtImg :src="config.public.assets.hero" alt="Luxora Jewelry" class="h-full w-full object-cover"
-                    width="1920" height="1080" />
-                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
-            </div>
-            <div class="relative text-center text-white px-6 max-w-5xl mx-auto z-10">
-                <span
-                    class="block text-luxora-gold tracking-[0.2em] text-sm md:text-base mb-4 uppercase animate-fade-in">
-                    Est. 2024
-                </span>
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif mb-8 leading-tight animate-fade-in-up">
-                    Timeless Elegance <br /> <span class="italic text-luxora-gold">Redefined</span>
-                </h1>
-                <p
-                    class="text-lg md:text-xl mb-12 font-light tracking-wide text-gray-200 max-w-2xl mx-auto animate-fade-in-up delay-100">
-                    Discover our exclusive collection of premium jewelry, curated to elevate every moment.
-                </p>
-                <div class="flex flex-col md:flex-row gap-4 justify-center animate-fade-in-up delay-200">
-                    <NuxtLink to="/shop"
-                        class="inline-block bg-luxora-gold text-luxora-black px-10 py-4 font-bold tracking-widest hover:bg-white transition-all duration-300 transform hover:-translate-y-1">
-                        SHOP COLLECTION
-                    </NuxtLink>
-                    <NuxtLink to="/about"
-                        class="inline-block border border-white text-white px-10 py-4 font-bold tracking-widest hover:bg-white hover:text-luxora-black transition-all duration-300 transform hover:-translate-y-1">
-                        OUR STORY
-                    </NuxtLink>
+        <!-- Hero Section -->
+        <section class="relative h-[85vh] flex items-center bg-[#F2F0EB] overflow-hidden">
+            <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center">
+                <!-- Text Content (Left) -->
+                <div class="w-full md:w-1/2 z-10 pt-20 md:pt-0 pr-0 md:pr-12">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-serif text-luxora-black mb-6 leading-tight animate-fade-in-up">
+                        Effortless Essentials <br />
+                        for the Modern Day.
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-10 animate-fade-in-up delay-100">
+                        Discover the new season drop.
+                    </p>
+                    <div class="animate-fade-in-up delay-200">
+                        <NuxtLink to="/shop"
+                            class="inline-block bg-[#C18C7E] text-white px-8 py-3 text-sm font-bold tracking-widest hover:bg-[#A67568] transition-colors duration-300 uppercase">
+                            [ Shop New Arrivals ]
+                        </NuxtLink>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Trust Signals -->
-        <section class="py-16 bg-white border-b border-gray-100">
-            <div class="container mx-auto px-6">
-                <div
-                    class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100">
-                    <div class="p-4">
-                        <ShieldCheckIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Curated Selection</h3>
-                        <p class="text-gray-500 text-sm">Hand-picked designs for the modern lifestyle.</p>
-                    </div>
-                    <div class="p-4">
-                        <TruckIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Global Shipping</h3>
-                        <p class="text-gray-500 text-sm">Delivered securely to your doorstep.</p>
-                    </div>
-                    <div class="p-4">
-                        <SparklesIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Quality Assurance</h3>
-                        <p class="text-gray-500 text-sm">Premium quality checks on every order.</p>
-                    </div>
+                
+                <!-- Image Content (Right) -->
+                <div class="absolute right-0 top-0 h-full w-full md:w-1/2 overflow-hidden">
+                    <NuxtImg src="/assets/hero-woman-face.png" alt="Luxora Jewelry" 
+                        class="h-full w-full object-cover object-center"
+                        width="960" height="1080" />
                 </div>
             </div>
         </section>
 
         <!-- Categories -->
-        <section v-if="categories && categories.length > 0" class="py-24 container mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-luxora-gold text-sm tracking-widest uppercase font-bold">Collections</span>
-                <h2 class="text-4xl md:text-5xl font-serif mt-2 mb-6">Explore by Category</h2>
-                <div class="w-24 h-1 bg-luxora-gold mx-auto"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section v-if="categories && categories.length > 0" class="py-16 bg-white container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div v-for="(category, index) in categories" :key="category.id"
-                    :class="['relative group overflow-hidden h-[350px] cursor-pointer', index === 0 ? 'md:col-span-2 lg:col-span-2' : '']">
+                    class="relative group overflow-hidden h-[300px] cursor-pointer">
                     <NuxtImg :src="category.image || config.public.assets.placeholder.category" :alt="category.name"
-                        class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                    </div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full">
-                        <h3
-                            class="text-3xl font-serif text-white mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            {{ category.name }}</h3>
-                        <NuxtLink :to="`/shop?category=${category.name}`"
-                            class="inline-block text-luxora-gold text-sm tracking-widest uppercase font-bold opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                            View Collection &rarr;
-                        </NuxtLink>
+                        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <h3 class="text-white text-xl md:text-2xl font-serif tracking-widest uppercase border-b-2 border-transparent group-hover:border-white pb-1 transition-all duration-300">
+                            {{ category.name }}
+                        </h3>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Collection -->
+        <!-- The Weekly Edit (Featured) -->
         <section class="py-24 bg-white">
             <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-16">
-                    <div class="text-center md:text-left mb-8 md:mb-0">
-                        <span class="text-luxora-gold text-sm tracking-widest uppercase font-bold">Curated For
-                            You</span>
-                        <h2 class="text-4xl md:text-5xl font-serif mt-2">Featured Pieces</h2>
-                    </div>
-                    <NuxtLink to="/shop"
-                        class="text-luxora-black border-b border-luxora-black pb-1 hover:text-luxora-gold hover:border-luxora-gold transition-colors">
-                        View All Products
-                    </NuxtLink>
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-serif mb-4">The Weekly Edit</h2>
+                    <p class="text-gray-600">Our most coveted pieces right now.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
                     <ProductCard v-for="product in featuredProducts" :key="product.id" :product="product" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Date Night Ready Banner -->
+        <section class="bg-[#F2F0EB]">
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Image Left -->
+                <div class="h-[500px] md:h-[600px]">
+                    <NuxtImg src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop" 
+                        alt="Date Night Ready" 
+                        class="h-full w-full object-cover" />
+                </div>
+                <!-- Text Right -->
+                <div class="flex flex-col justify-center items-start p-12 md:p-24">
+                    <h2 class="text-4xl md:text-5xl font-serif mb-6">Date Night Ready</h2>
+                    <p class="text-lg text-gray-600 mb-8 max-w-md">
+                        From sleek dresses to the finishing sparkle. Curated looks for your evening plans.
+                    </p>
+                    <NuxtLink to="/shop?collection=date-night"
+                        class="text-luxora-black font-bold tracking-widest uppercase text-sm border-b-2 border-luxora-black pb-1 hover:text-luxora-gold hover:border-luxora-gold transition-colors duration-300">
+                        [ Shop The Occasion Edit ]
+                    </NuxtLink>
                 </div>
             </div>
         </section>
@@ -133,20 +111,52 @@
             </div>
         </section>
 
-        <!-- Newsletter -->
-        <section class="py-24 container mx-auto px-6">
-            <div class="bg-luxora-gold/10 p-12 md:p-20 text-center rounded-2xl relative overflow-hidden">
-                <div class="relative z-10 max-w-2xl mx-auto">
-                    <h2 class="text-3xl md:text-4xl font-serif mb-4">Join the Luxora Family</h2>
-                    <p class="text-gray-600 mb-8">Subscribe to receive updates, access to exclusive deals, and more.</p>
-                    <form @submit.prevent="subscribe" class="flex flex-col md:flex-row gap-4">
-                        <input type="email" placeholder="Enter your email address" required
-                            class="flex-grow px-6 py-4 bg-white border border-transparent focus:border-luxora-gold focus:outline-none rounded-none" />
+        <!-- Newsletter / Bottom Bar -->
+        <section class="py-12 bg-[#E5E5E5] border-t border-gray-200">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+                <!-- Left: Signup -->
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-sm font-bold text-luxora-black mb-4">Email Signup for account</h3>
+                    <form @submit.prevent="subscribe" class="flex max-w-md">
+                        <input type="email" placeholder="Email address" required
+                            class="flex-grow px-4 py-3 bg-white border border-transparent focus:border-luxora-black focus:outline-none text-sm" />
                         <button type="submit"
-                            class="bg-luxora-black text-white px-10 py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
-                            SUBSCRIBE
+                            class="bg-black text-white px-6 py-3 text-sm font-bold hover:bg-gray-800 transition-colors duration-300">
+                            Sign up
                         </button>
                     </form>
+                    <p class="text-xs text-gray-500 mt-4">© 2024 Luxora.</p>
+                </div>
+
+                <!-- Right: Links & Socials -->
+                <div class="w-full md:w-1/2 flex flex-col md:flex-row justify-end items-center gap-8">
+                    <div class="flex gap-6 text-sm text-luxora-black font-medium">
+                        <NuxtLink to="/account" class="hover:text-luxora-gold transition-colors">My Account</NuxtLink>
+                        <NuxtLink to="/shipping-policy" class="hover:text-luxora-gold transition-colors">Shipping & Returns</NuxtLink>
+                        <NuxtLink to="/contact" class="hover:text-luxora-gold transition-colors">Contact Us</NuxtLink>
+                    </div>
+                    
+                    <!-- Social Icons -->
+                    <div class="flex gap-4">
+                        <a href="#" class="text-luxora-black hover:text-luxora-gold transition-colors">
+                            <span class="sr-only">Facebook</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="#" class="text-luxora-black hover:text-luxora-gold transition-colors">
+                            <span class="sr-only">Instagram</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772 4.902 4.902 0 011.772-1.153c.636-.247 1.363-.416 2.427-.465 1.067-.047 1.409-.06 3.809-.06zm0 1.838c-2.527 0-2.833.01-3.825.056-1.003.045-1.546.21-1.91.352a3.08 3.08 0 00-1.127.733c-.38.38-.63.75-.733 1.127-.142.363-.307.907-.352 1.91-.046.992-.056 1.298-.056 3.825 0 2.527.01 2.833.056 3.825.045 1.003.21 1.546.352 1.91.103.377.353.747.733 1.127.38.38.75.63 1.127.733.363.142.907.307 1.91.352.992.046 1.298.056 3.825.056 2.527 0 2.833-.01 3.825-.056 1.003-.045 1.546-.21 1.91-.352a3.08 3.08 0 001.127-.733c.38-.38.63-.75.733-1.127.142-.363.307-.907.352-1.91.046-.992.056-1.298.056-3.825 0-2.527-.01-2.833-.056-3.825-.045-1.003-.21-1.546-.352-1.91a3.08 3.08 0 00-.733-1.127 3.08 3.08 0 00-1.127-.733c-.363-.142-.907-.307-1.91-.352-.992-.046-1.298-.056-3.825-.056zm0 4.54a4.54 4.54 0 110 9.08 4.54 4.54 0 010-9.08zm0 1.838a2.702 2.702 0 100 5.404 2.702 2.702 0 000-5.404zm5.884-5.376a1.096 1.096 0 110 2.192 1.096 1.096 0 010-2.192z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        <a href="#" class="text-luxora-black hover:text-luxora-gold transition-colors">
+                            <span class="sr-only">Pinterest</span>
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.399.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.173 0 7.41 2.967 7.41 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.367 18.62 0 12.017 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
