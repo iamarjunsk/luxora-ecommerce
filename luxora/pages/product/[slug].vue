@@ -11,18 +11,48 @@
 
         <div class="container mx-auto px-6 pt-4 pb-24">
             <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
-                <!-- Image Gallery (Left) - Vertical Stack on Desktop -->
-                <div class="w-full lg:w-3/5 flex flex-col gap-4">
-                    <div v-if="product.images && product.images.length > 0" class="space-y-4">
-                        <div v-for="(img, index) in product.images" :key="img.id" 
-                            class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative group">
-                            <NuxtImg :src="img.url" :alt="`${product.name} - View ${index + 1}`" 
-                                class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
+                <!-- Image Gallery (Left) -->
+                <div class="w-full lg:w-3/5">
+                    <!-- Mobile Carousel (Hidden on Desktop) -->
+                    <div v-if="product.images && product.images.length > 0"
+                        class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:hidden">
+                        <div v-for="(img, index) in product.images" :key="img.id"
+                            class="min-w-full snap-center bg-gray-50 aspect-[3/4] overflow-hidden relative">
+                            <NuxtImg :src="img.url" :alt="`${product.name} - View ${index + 1}`"
+                                class="w-full h-full object-cover object-center" />
                         </div>
                     </div>
-                    <div v-else class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative">
-                        <NuxtImg :src="config.public.assets.placeholder.product" :alt="product.name" 
+
+                    <!-- Desktop Gallery (Hidden on Mobile) -->
+                    <div class="hidden lg:flex flex-col gap-4">
+                        <!-- Main Image -->
+                        <div class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative group cursor-zoom-in">
+                            <NuxtImg :src="activeImage || product.images?.[0]?.url" :alt="product.name"
+                                class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
+                        </div>
+                        <!-- Thumbnails -->
+                        <div v-if="product.images && product.images.length > 1" class="grid grid-cols-5 gap-4">
+                            <button v-for="(img, index) in product.images" :key="img.id" @click="activeImage = img.url"
+                                class="aspect-[3/4] overflow-hidden border-2 transition-all duration-300"
+                                :class="activeImage === img.url ? 'border-luxora-black opacity-100' : 'border-transparent opacity-70 hover:opacity-100'">
+                                <NuxtImg :src="img.url" :alt="`${product.name} - Thumbnail ${index + 1}`"
+                                    class="w-full h-full object-cover object-center" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-if="(!product.images || product.images.length === 0)"
+                        class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative">
+                        <NuxtImg :src="config.public.assets.placeholder.product" :alt="product.name"
                             class="w-full h-full object-cover object-center" />
+                    </div>
+
+                    <!-- Mobile Dots Indicator -->
+                    <div v-if="product.images && product.images.length > 1"
+                        class="flex justify-center gap-2 mt-4 lg:hidden">
+                        <div v-for="(img, index) in product.images" :key="index"
+                            class="w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors"
+                            :class="{ 'bg-luxora-black': activeImageIndex === index }"></div>
                     </div>
                 </div>
 
@@ -31,8 +61,11 @@
                     <div class="sticky top-8 space-y-8">
                         <!-- Header -->
                         <div class="border-b border-gray-100 pb-6">
-                            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-3">{{ product.category }}</h2>
-                            <h1 class="text-3xl md:text-4xl lg:text-5xl font-serif text-luxora-black mb-4 leading-tight">{{ product.name }}</h1>
+                            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-3">{{
+                                product.category }}</h2>
+                            <h1
+                                class="text-3xl md:text-4xl lg:text-5xl font-serif text-luxora-black mb-4 leading-tight">
+                                {{ product.name }}</h1>
                             <div class="flex items-center justify-between">
                                 <p class="text-2xl font-medium text-gray-900">₹{{ product.price.toLocaleString() }}</p>
                                 <div class="flex items-center gap-1" v-if="reviewsData?.averageRating">
@@ -47,10 +80,10 @@
                             <div class="flex gap-4">
                                 <!-- Quantity -->
                                 <div class="flex items-center border border-gray-200 w-32 h-14">
-                                    <button @click="quantity > 1 ? quantity-- : null" 
+                                    <button @click="quantity > 1 ? quantity-- : null"
                                         class="w-10 h-full flex items-center justify-center hover:bg-gray-50 transition-colors text-gray-500">-</button>
                                     <span class="flex-grow text-center font-medium">{{ quantity }}</span>
-                                    <button @click="quantity++" 
+                                    <button @click="quantity++"
                                         class="w-10 h-full flex items-center justify-center hover:bg-gray-50 transition-colors text-gray-500">+</button>
                                 </div>
                                 <!-- Wishlist -->
@@ -60,12 +93,12 @@
                                         :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400 group-hover:text-luxora-black'" />
                                 </button>
                             </div>
-                            
+
                             <button @click="addToCart"
                                 class="w-full bg-luxora-black text-white h-14 text-sm font-bold tracking-[0.2em] uppercase hover:bg-luxora-gold hover:text-luxora-black transition-all duration-300 shadow-lg hover:shadow-xl">
                                 Add to Bag
                             </button>
-                            
+
                             <p class="text-xs text-center text-gray-500 mt-2">Free shipping on all orders over ₹500</p>
                         </div>
 
@@ -73,24 +106,35 @@
                         <div class="border-t border-gray-200 pt-2">
                             <!-- Description -->
                             <div class="border-b border-gray-200">
-                                <button @click="toggleSection('description')" class="w-full py-4 flex justify-between items-center text-left group">
-                                    <span class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Description</span>
-                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300" :class="{'rotate-45': openSections.description}">+</span>
+                                <button @click="toggleSection('description')"
+                                    class="w-full py-4 flex justify-between items-center text-left group">
+                                    <span
+                                        class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Description</span>
+                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300"
+                                        :class="{ 'rotate-45': openSections.description }">+</span>
                                 </button>
-                                <div v-show="openSections.description" class="pb-6 text-gray-600 font-light leading-relaxed text-sm">
+                                <div v-show="openSections.description"
+                                    class="pb-6 text-gray-600 font-light leading-relaxed text-sm">
                                     {{ product.description }}
                                 </div>
                             </div>
 
                             <!-- Shipping & Returns -->
                             <div class="border-b border-gray-200">
-                                <button @click="toggleSection('shipping')" class="w-full py-4 flex justify-between items-center text-left group">
-                                    <span class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Shipping & Returns</span>
-                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300" :class="{'rotate-45': openSections.shipping}">+</span>
+                                <button @click="toggleSection('shipping')"
+                                    class="w-full py-4 flex justify-between items-center text-left group">
+                                    <span
+                                        class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Shipping
+                                        & Returns</span>
+                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300"
+                                        :class="{ 'rotate-45': openSections.shipping }">+</span>
                                 </button>
-                                <div v-show="openSections.shipping" class="pb-6 text-gray-600 font-light leading-relaxed text-sm space-y-2">
-                                    <p><strong>Shipping:</strong> Free standard shipping on orders over ₹500. Estimated delivery: 3-5 business days.</p>
-                                    <p><strong>Returns:</strong> We accept returns within 30 days of delivery. Items must be unworn and in original packaging.</p>
+                                <div v-show="openSections.shipping"
+                                    class="pb-6 text-gray-600 font-light leading-relaxed text-sm space-y-2">
+                                    <p><strong>Shipping:</strong> Free standard shipping on orders over ₹500. Estimated
+                                        delivery: 3-5 business days.</p>
+                                    <p><strong>Returns:</strong> We accept returns within 30 days of delivery. Items
+                                        must be unworn and in original packaging.</p>
                                 </div>
                             </div>
                         </div>
@@ -131,20 +175,25 @@
                             </form>
                         </div>
                         <div v-else class="bg-gray-50 p-8 text-center">
-                            <p class="text-sm text-gray-500">Please <NuxtLink to="/login" class="text-luxora-gold underline">login</NuxtLink> or purchase this item to leave a review.</p>
+                            <p class="text-sm text-gray-500">Please <NuxtLink to="/login"
+                                    class="text-luxora-gold underline">login</NuxtLink> or purchase this item to leave a
+                                review.</p>
                         </div>
                     </div>
 
                     <!-- Reviews List -->
                     <div class="md:col-span-2 space-y-10">
                         <div v-if="reviewsData && reviewsData.reviews.length > 0">
-                            <div v-for="review in reviewsData.reviews" :key="review.id" class="border-b border-gray-100 pb-10 last:border-0">
+                            <div v-for="review in reviewsData.reviews" :key="review.id"
+                                class="border-b border-gray-100 pb-10 last:border-0">
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <p class="font-bold text-sm uppercase tracking-wider mb-2">{{ review.user.name || 'Anonymous' }}</p>
+                                        <p class="font-bold text-sm uppercase tracking-wider mb-2">{{ review.user.name
+                                            || 'Anonymous' }}</p>
                                         <StarRating :rating="review.rating" readonly size="sm" />
                                     </div>
-                                    <span class="text-xs text-gray-400 font-mono">{{ new Date(review.createdAt).toLocaleDateString() }}</span>
+                                    <span class="text-xs text-gray-400 font-mono">{{ new
+                                        Date(review.createdAt).toLocaleDateString() }}</span>
                                 </div>
                                 <p class="text-gray-600 font-light leading-relaxed">{{ review.comment }}</p>
                             </div>
@@ -168,7 +217,8 @@
     </div>
     <div v-else class="min-h-screen flex flex-col items-center justify-center bg-white">
         <h1 class="text-4xl font-serif mb-6 text-luxora-black">Product Not Found</h1>
-        <NuxtLink to="/shop" class="text-sm font-bold uppercase tracking-widest border-b-2 border-luxora-gold pb-1 hover:text-luxora-gold transition-colors">
+        <NuxtLink to="/shop"
+            class="text-sm font-bold uppercase tracking-widest border-b-2 border-luxora-gold pb-1 hover:text-luxora-gold transition-colors">
             Return to Shop
         </NuxtLink>
     </div>
@@ -195,6 +245,8 @@ if (error.value || !product.value) {
 }
 
 const quantity = ref(1)
+const activeImage = ref(product.value.images?.[0]?.url || '')
+const activeImageIndex = ref(0)
 const openSections = ref({
     description: true,
     shipping: false
@@ -203,6 +255,18 @@ const openSections = ref({
 const toggleSection = (section) => {
     openSections.value[section] = !openSections.value[section]
 }
+
+// Update active index on scroll (for mobile dots)
+onMounted(() => {
+    const gallery = document.querySelector('.snap-x')
+    if (gallery) {
+        gallery.addEventListener('scroll', () => {
+            const scrollLeft = gallery.scrollLeft
+            const width = gallery.offsetWidth
+            activeImageIndex.value = Math.round(scrollLeft / width)
+        })
+    }
+})
 
 const addToCart = () => {
     if (product.value) {
