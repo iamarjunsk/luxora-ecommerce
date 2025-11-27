@@ -1,129 +1,226 @@
 <template>
-    <div v-if="product" class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
-            <!-- Image Gallery -->
-            <div class="flex flex-col gap-4">
-                <div class="bg-white border border-gray-100 p-4 aspect-square overflow-hidden cursor-zoom-in"
-                    @click="isViewerOpen = true">
-                    <NuxtImg :src="activeImage" :alt="product.name" class="w-full h-full object-cover object-center" />
-                </div>
-                <div v-if="product.images && product.images.length > 1" class="flex gap-4 overflow-x-auto pb-2">
-                    <button v-for="img in product.images" :key="img.id" @click="activeImage = img.url"
-                        class="w-20 h-20 flex-shrink-0 border-2 transition-colors duration-200 overflow-hidden"
-                        :class="activeImage === img.url ? 'border-luxora-gold' : 'border-transparent hover:border-gray-200'">
-                        <NuxtImg :src="img.url" :alt="product.name" class="w-full h-full object-cover" />
-                    </button>
-                </div>
-            </div>
-
-            <!-- Details -->
-            <div class="flex flex-col justify-center">
-                <p class="text-sm text-luxora-gray uppercase tracking-wider mb-2">{{ product.category }}</p>
-                <h1 class="text-4xl md:text-5xl font-serif text-luxora-black mb-4">{{ product.name }}</h1>
-                <p class="text-2xl font-medium text-luxora-gold mb-8">₹{{ product.price.toLocaleString() }}</p>
-
-                <p class="text-gray-600 leading-relaxed mb-8 text-lg">
-                    {{ product.description }}
-                </p>
-
-                <div class="flex gap-4 mb-8">
-                    <div class="flex items-center border border-gray-300">
-                        <button @click="quantity > 1 ? quantity-- : null" class="px-4 py-2 hover:bg-gray-100">-</button>
-                        <span class="px-4 py-2 font-medium">{{ quantity }}</span>
-                        <button @click="quantity++" class="px-4 py-2 hover:bg-gray-100">+</button>
-                    </div>
-                    <button @click="addToCart"
-                        class="flex-grow bg-luxora-black text-white px-8 py-3 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
-                        ADD TO CART
-                    </button>
-                    <button @click="wishlistStore.toggleWishlist(product)"
-                        class="border border-gray-300 p-3 hover:border-luxora-gold transition-colors duration-300">
-                        <HeartIcon class="h-6 w-6"
-                            :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400'" />
-                    </button>
-                </div>
-
-                <div class="border-t border-gray-200 pt-6 space-y-3 text-sm text-gray-500">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                        In Stock & Ready to Ship
-                    </div>
-                    <p>Free shipping on orders over ₹500.</p>
-                    <p>30-day money-back guarantee.</p>
-                </div>
-            </div>
+    <div v-if="product" class="bg-white min-h-screen font-sans text-luxora-black">
+        <!-- Breadcrumbs -->
+        <div class="container mx-auto px-6 py-4 text-xs uppercase tracking-widest text-gray-500">
+            <NuxtLink to="/" class="hover:text-luxora-gold transition-colors">Home</NuxtLink>
+            <span class="mx-2">/</span>
+            <NuxtLink to="/shop" class="hover:text-luxora-gold transition-colors">Shop</NuxtLink>
+            <span class="mx-2">/</span>
+            <span class="text-luxora-black font-medium">{{ product.category }}</span>
         </div>
 
-        <!-- Reviews Section -->
-        <div class="mt-16 border-t border-gray-200 pt-12">
-            <h2 class="text-2xl font-serif mb-2">Customer Reviews</h2>
-            <div v-if="reviewsData" class="flex items-center gap-4 mb-8">
-                <StarRating :rating="reviewsData.averageRating" readonly size="lg" />
-                <span class="text-xl font-medium">{{ reviewsData.averageRating.toFixed(1) }}</span>
-                <span class="text-gray-500">({{ reviewsData.totalReviews }} {{ reviewsData.totalReviews === 1 ? 'review'
-                    : 'reviews' }})</span>
-            </div>
-
-            <!-- Review Form (Verified Buyers Only) -->
-            <div v-if="canReview" class="bg-gray-50 p-6 rounded-lg mb-8">
-                <h3 class="text-lg font-semibold mb-4">Write a Review</h3>
-                <form @submit.prevent="submitReview">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Your Rating</label>
-                        <StarRating v-model:rating="newReview.rating" />
+        <div class="container mx-auto px-6 pt-4 pb-24">
+            <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
+                <!-- Image Gallery (Left) -->
+                <div class="w-full lg:w-3/5">
+                    <!-- Mobile Carousel (Hidden on Desktop) -->
+                    <div v-if="product.images && product.images.length > 0"
+                        class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:hidden">
+                        <div v-for="(img, index) in product.images" :key="img.id"
+                            class="min-w-full snap-center bg-gray-50 aspect-[3/4] overflow-hidden relative">
+                            <NuxtImg :src="img.url" :alt="`${product.name} - View ${index + 1}`"
+                                class="w-full h-full object-cover object-center" />
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-2">Your Review</label>
-                        <textarea v-model="newReview.comment" rows="4"
-                            class="w-full border border-gray-300 rounded p-3 focus:outline-none focus:border-luxora-gold"
-                            placeholder="Share your thoughts about this product..." required minlength="10"></textarea>
-                    </div>
-                    <button type="submit" :disabled="submittingReview || newReview.rating === 0"
-                        class="bg-luxora-black text-white px-6 py-2 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ submittingReview ? 'Submitting...' : 'Submit Review' }}
-                    </button>
-                </form>
-            </div>
 
-            <!-- Reviews List -->
-            <div v-if="reviewsData && reviewsData.reviews.length > 0" class="space-y-6">
-                <div v-for="review in reviewsData.reviews" :key="review.id" class="border-b border-gray-100 pb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-10 h-10 bg-luxora-gold text-luxora-black rounded-full flex items-center justify-center font-bold">
-                                {{ review.user.name?.charAt(0) || 'U' }}
-                            </div>
-                            <div>
-                                <p class="font-medium">{{ review.user.name || 'Anonymous' }}</p>
-                                <StarRating :rating="review.rating" readonly size="sm" />
+                    <!-- Desktop Gallery (Hidden on Mobile) -->
+                    <div class="hidden lg:flex flex-col gap-4">
+                        <!-- Main Image -->
+                        <div class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative group cursor-zoom-in">
+                            <NuxtImg :src="activeImage || product.images?.[0]?.url" :alt="product.name"
+                                class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
+                        </div>
+                        <!-- Thumbnails -->
+                        <div v-if="product.images && product.images.length > 1" class="grid grid-cols-5 gap-4">
+                            <button v-for="(img, index) in product.images" :key="img.id" @click="activeImage = img.url"
+                                class="aspect-[3/4] overflow-hidden border-2 transition-all duration-300"
+                                :class="activeImage === img.url ? 'border-luxora-black opacity-100' : 'border-transparent opacity-70 hover:opacity-100'">
+                                <NuxtImg :src="img.url" :alt="`${product.name} - Thumbnail ${index + 1}`"
+                                    class="w-full h-full object-cover object-center" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-if="(!product.images || product.images.length === 0)"
+                        class="w-full bg-gray-50 aspect-[3/4] overflow-hidden relative">
+                        <NuxtImg :src="config.public.assets.placeholder.product" :alt="product.name"
+                            class="w-full h-full object-cover object-center" />
+                    </div>
+
+                    <!-- Mobile Dots Indicator -->
+                    <div v-if="product.images && product.images.length > 1"
+                        class="flex justify-center gap-2 mt-4 lg:hidden">
+                        <div v-for="(img, index) in product.images" :key="index"
+                            class="w-1.5 h-1.5 rounded-full bg-gray-300 transition-colors"
+                            :class="{ 'bg-luxora-black': activeImageIndex === index }"></div>
+                    </div>
+                </div>
+
+                <!-- Details (Right - Sticky) -->
+                <div class="w-full lg:w-2/5 relative">
+                    <div class="sticky top-8 space-y-8">
+                        <!-- Header -->
+                        <div class="border-b border-gray-100 pb-6">
+                            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-[0.2em] mb-3">{{
+                                product.category }}</h2>
+                            <h1
+                                class="text-3xl md:text-4xl lg:text-5xl font-serif text-luxora-black mb-4 leading-tight">
+                                {{ product.name }}</h1>
+                            <div class="flex items-center justify-between">
+                                <p class="text-2xl font-medium text-gray-900">₹{{ product.price.toLocaleString() }}</p>
+                                <div class="flex items-center gap-1" v-if="reviewsData?.averageRating">
+                                    <StarRating :rating="reviewsData.averageRating" readonly size="sm" />
+                                    <span class="text-xs text-gray-500 ml-2">({{ reviewsData.totalReviews }})</span>
+                                </div>
                             </div>
                         </div>
-                        <span class="text-sm text-gray-500">{{ new Date(review.createdAt).toLocaleDateString() }}</span>
+
+                        <!-- Actions -->
+                        <div class="space-y-4">
+                            <div class="flex gap-4">
+                                <!-- Quantity -->
+                                <div class="flex items-center border border-gray-200 w-32 h-14">
+                                    <button @click="quantity > 1 ? quantity-- : null"
+                                        class="w-10 h-full flex items-center justify-center hover:bg-gray-50 transition-colors text-gray-500">-</button>
+                                    <span class="flex-grow text-center font-medium">{{ quantity }}</span>
+                                    <button @click="quantity++"
+                                        class="w-10 h-full flex items-center justify-center hover:bg-gray-50 transition-colors text-gray-500">+</button>
+                                </div>
+                                <!-- Wishlist -->
+                                <button @click="wishlistStore.toggleWishlist(product)"
+                                    class="border border-gray-200 w-14 h-14 flex items-center justify-center hover:border-luxora-black transition-colors duration-300 group">
+                                    <HeartIcon class="h-6 w-6 transition-colors"
+                                        :class="wishlistStore.isInWishlist(product.id) ? 'text-red-500 fill-current' : 'text-gray-400 group-hover:text-luxora-black'" />
+                                </button>
+                            </div>
+
+                            <button @click="addToCart"
+                                class="w-full bg-luxora-black text-white h-14 text-sm font-bold tracking-[0.2em] uppercase hover:bg-luxora-gold hover:text-luxora-black transition-all duration-300 shadow-lg hover:shadow-xl">
+                                Add to Bag
+                            </button>
+
+                            <p class="text-xs text-center text-gray-500 mt-2">Free shipping on all orders over ₹500</p>
+                        </div>
+
+                        <!-- Accordions -->
+                        <div class="border-t border-gray-200 pt-2">
+                            <!-- Description -->
+                            <div class="border-b border-gray-200">
+                                <button @click="toggleSection('description')"
+                                    class="w-full py-4 flex justify-between items-center text-left group">
+                                    <span
+                                        class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Description</span>
+                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300"
+                                        :class="{ 'rotate-45': openSections.description }">+</span>
+                                </button>
+                                <div v-show="openSections.description"
+                                    class="pb-6 text-gray-600 font-light leading-relaxed text-sm">
+                                    {{ product.description }}
+                                </div>
+                            </div>
+
+                            <!-- Shipping & Returns -->
+                            <div class="border-b border-gray-200">
+                                <button @click="toggleSection('shipping')"
+                                    class="w-full py-4 flex justify-between items-center text-left group">
+                                    <span
+                                        class="font-serif text-lg text-gray-900 group-hover:text-luxora-gold transition-colors">Shipping
+                                        & Returns</span>
+                                    <span class="text-xl font-light text-gray-400 transition-transform duration-300"
+                                        :class="{ 'rotate-45': openSections.shipping }">+</span>
+                                </button>
+                                <div v-show="openSections.shipping"
+                                    class="pb-6 text-gray-600 font-light leading-relaxed text-sm space-y-2">
+                                    <p><strong>Shipping:</strong> Free standard shipping on orders over ₹500. Estimated
+                                        delivery: 3-5 business days.</p>
+                                    <p><strong>Returns:</strong> We accept returns within 30 days of delivery. Items
+                                        must be unworn and in original packaging.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-gray-700 mt-3">{{ review.comment }}</p>
                 </div>
             </div>
-            <div v-else-if="reviewsData" class="text-center py-12 text-gray-500">
-                <p>No reviews yet. Be the first to review this product!</p>
+
+            <!-- Reviews Section (Full Width) -->
+            <div class="mt-32 max-w-4xl mx-auto border-t border-gray-200 pt-16">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-serif mb-4">Customer Reviews</h2>
+                    <div v-if="reviewsData" class="flex items-center justify-center gap-2">
+                        <StarRating :rating="reviewsData.averageRating" readonly size="md" />
+                        <span class="text-gray-500 text-sm tracking-wide">{{ reviewsData.totalReviews }} Reviews</span>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-12">
+                    <!-- Review Form -->
+                    <div class="md:col-span-1">
+                        <div v-if="canReview" class="bg-gray-50 p-8 sticky top-8">
+                            <h3 class="font-serif text-xl mb-6">Write a Review</h3>
+                            <form @submit.prevent="submitReview">
+                                <div class="mb-6">
+                                    <label class="block text-xs font-bold uppercase tracking-wider mb-2">Rating</label>
+                                    <StarRating v-model:rating="newReview.rating" />
+                                </div>
+                                <div class="mb-6">
+                                    <label class="block text-xs font-bold uppercase tracking-wider mb-2">Review</label>
+                                    <textarea v-model="newReview.comment" rows="4"
+                                        class="w-full bg-white border border-gray-200 focus:border-luxora-black focus:ring-0 p-4 text-sm transition-colors"
+                                        placeholder="Share your thoughts..." required minlength="10"></textarea>
+                                </div>
+                                <button type="submit" :disabled="submittingReview || newReview.rating === 0"
+                                    class="w-full bg-luxora-black text-white py-3 text-xs font-bold tracking-widest uppercase hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300 disabled:opacity-50">
+                                    {{ submittingReview ? 'Submitting...' : 'Submit' }}
+                                </button>
+                            </form>
+                        </div>
+                        <div v-else class="bg-gray-50 p-8 text-center">
+                            <p class="text-sm text-gray-500">Please <NuxtLink to="/login"
+                                    class="text-luxora-gold underline">login</NuxtLink> or purchase this item to leave a
+                                review.</p>
+                        </div>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <div class="md:col-span-2 space-y-10">
+                        <div v-if="reviewsData && reviewsData.reviews.length > 0">
+                            <div v-for="review in reviewsData.reviews" :key="review.id"
+                                class="border-b border-gray-100 pb-10 last:border-0">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <p class="font-bold text-sm uppercase tracking-wider mb-2">{{ review.user.name
+                                            || 'Anonymous' }}</p>
+                                        <StarRating :rating="review.rating" readonly size="sm" />
+                                    </div>
+                                    <span class="text-xs text-gray-400 font-mono">{{ new
+                                        Date(review.createdAt).toLocaleDateString() }}</span>
+                                </div>
+                                <p class="text-gray-600 font-light leading-relaxed">{{ review.comment }}</p>
+                            </div>
+                        </div>
+                        <div v-else class="text-center py-12 text-gray-400 italic bg-gray-50 rounded-lg">
+                            No reviews yet. Be the first to review this product.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div v-if="relatedProducts.length > 0" class="mt-32 border-t border-gray-200 pt-16">
+                <h2 class="text-3xl font-serif mb-12 text-center">You May Also Like</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+                    <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id"
+                        :product="relatedProduct" />
+                </div>
             </div>
         </div>
-
-        <!-- Related Products -->
-        <div v-if="relatedProducts.length > 0" class="mt-16">
-            <h2 class="text-2xl font-serif mb-8 text-center">You May Also Like</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <ProductCard v-for="relatedProduct in relatedProducts" :key="relatedProduct.id"
-                    :product="relatedProduct" />
-            </div>
-        </div>
-
-        <!-- Image Viewer -->
-        <ImageViewer :is-open="isViewerOpen" :image-url="activeImage" @close="isViewerOpen = false" />
     </div>
-    <div v-else class="container mx-auto px-6 py-20 text-center">
-        <h1 class="text-2xl font-serif mb-4">Product Not Found</h1>
-        <NuxtLink to="/shop" class="text-luxora-gold hover:underline">Return to Shop</NuxtLink>
+    <div v-else class="min-h-screen flex flex-col items-center justify-center bg-white">
+        <h1 class="text-4xl font-serif mb-6 text-luxora-black">Product Not Found</h1>
+        <NuxtLink to="/shop"
+            class="text-sm font-bold uppercase tracking-widest border-b-2 border-luxora-gold pb-1 hover:text-luxora-gold transition-colors">
+            Return to Shop
+        </NuxtLink>
     </div>
 </template>
 
@@ -135,6 +232,7 @@ import { storeToRefs } from 'pinia'
 import { HeartIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
+const config = useRuntimeConfig()
 const cartStore = useCartStore()
 const wishlistStore = useWishlistStore()
 const { showSnackbar } = useSnackbar()
@@ -148,13 +246,25 @@ if (error.value || !product.value) {
 
 const quantity = ref(1)
 const activeImage = ref(product.value.images?.[0]?.url || '')
-const selectedSize = ref(null)
-const isViewerOpen = ref(false)
+const activeImageIndex = ref(0)
+const openSections = ref({
+    description: true,
+    shipping: false
+})
 
-// Initialize active image
-watchEffect(() => {
-    if (product.value && product.value.images && product.value.images.length > 0) {
-        activeImage.value = product.value.images[0].url
+const toggleSection = (section) => {
+    openSections.value[section] = !openSections.value[section]
+}
+
+// Update active index on scroll (for mobile dots)
+onMounted(() => {
+    const gallery = document.querySelector('.snap-x')
+    if (gallery) {
+        gallery.addEventListener('scroll', () => {
+            const scrollLeft = gallery.scrollLeft
+            const width = gallery.offsetWidth
+            activeImageIndex.value = Math.round(scrollLeft / width)
+        })
     }
 })
 
@@ -229,6 +339,4 @@ const submitReview = async () => {
         submittingReview.value = false
     }
 }
-
-
 </script>

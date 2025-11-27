@@ -1,107 +1,87 @@
 <template>
-    <div class="bg-luxora-cream">
+    <div class="bg-white">
         <!-- Hero Section -->
-        <section class="relative h-screen flex items-center justify-center overflow-hidden">
-            <div class="absolute inset-0">
-                <NuxtImg :src="config.public.assets.hero" alt="Luxora Jewelry" class="h-full w-full object-cover"
-                    width="1920" height="1080" />
-                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
-            </div>
-            <div class="relative text-center text-white px-6 max-w-5xl mx-auto z-10">
-                <span
-                    class="block text-luxora-gold tracking-[0.2em] text-sm md:text-base mb-4 uppercase animate-fade-in">
-                    Est. 2024
-                </span>
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif mb-8 leading-tight animate-fade-in-up">
-                    Timeless Elegance <br /> <span class="italic text-luxora-gold">Redefined</span>
-                </h1>
-                <p
-                    class="text-lg md:text-xl mb-12 font-light tracking-wide text-gray-200 max-w-2xl mx-auto animate-fade-in-up delay-100">
-                    Discover our exclusive collection of premium jewelry, curated to elevate every moment.
-                </p>
-                <div class="flex flex-col md:flex-row gap-4 justify-center animate-fade-in-up delay-200">
-                    <NuxtLink to="/shop"
-                        class="inline-block bg-luxora-gold text-luxora-black px-10 py-4 font-bold tracking-widest hover:bg-white transition-all duration-300 transform hover:-translate-y-1">
-                        SHOP COLLECTION
-                    </NuxtLink>
-                    <NuxtLink to="/about"
-                        class="inline-block border border-white text-white px-10 py-4 font-bold tracking-widest hover:bg-white hover:text-luxora-black transition-all duration-300 transform hover:-translate-y-1">
-                        OUR STORY
-                    </NuxtLink>
+        <!-- Hero Section -->
+        <!-- Hero Section -->
+        <section class="relative min-h-[85vh] flex items-center bg-[#F2F0EB] overflow-hidden">
+            <div class="container mx-auto px-6 h-full flex flex-col md:flex-row items-center pt-24 md:pt-0">
+                <!-- Text Content (Left) -->
+                <div class="w-full md:w-1/2 z-10 pr-0 md:pr-12 mb-12 md:mb-0 text-center md:text-left">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-serif text-luxora-black mb-6 leading-tight animate-fade-in-up">
+                        Effortless Essentials <br />
+                        for the Modern Day.
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-10 animate-fade-in-up delay-100">
+                        Discover the new season drop.
+                    </p>
+                    <div class="animate-fade-in-up delay-200">
+                        <NuxtLink to="/shop"
+                            class="inline-block bg-[#C18C7E] text-white px-8 py-3 text-sm font-bold tracking-widest hover:bg-[#A67568] transition-colors duration-300 uppercase">
+                            [ Shop New Arrivals ]
+                        </NuxtLink>
+                    </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Trust Signals -->
-        <section class="py-16 bg-white border-b border-gray-100">
-            <div class="container mx-auto px-6">
-                <div
-                    class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100">
-                    <div class="p-4">
-                        <ShieldCheckIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Curated Selection</h3>
-                        <p class="text-gray-500 text-sm">Hand-picked designs for the modern lifestyle.</p>
-                    </div>
-                    <div class="p-4">
-                        <TruckIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Global Shipping</h3>
-                        <p class="text-gray-500 text-sm">Delivered securely to your doorstep.</p>
-                    </div>
-                    <div class="p-4">
-                        <SparklesIcon class="h-10 w-10 text-luxora-gold mx-auto mb-4" />
-                        <h3 class="text-lg font-serif font-bold mb-2">Quality Assurance</h3>
-                        <p class="text-gray-500 text-sm">Premium quality checks on every order.</p>
-                    </div>
+                
+                <!-- Image Content (Right) -->
+                <div class="w-full md:w-1/2 h-[50vh] md:h-full md:absolute md:right-0 md:top-0 overflow-hidden">
+                    <NuxtImg src="/assets/hero-woman-face.png" alt="Luxora Jewelry" 
+                        class="h-full w-full object-cover object-top md:object-center"
+                        width="960" height="1080" />
                 </div>
             </div>
         </section>
 
         <!-- Categories -->
-        <section v-if="categories && categories.length > 0" class="py-24 container mx-auto px-6">
-            <div class="text-center mb-16">
-                <span class="text-luxora-gold text-sm tracking-widest uppercase font-bold">Collections</span>
-                <h2 class="text-4xl md:text-5xl font-serif mt-2 mb-6">Explore by Category</h2>
-                <div class="w-24 h-1 bg-luxora-gold mx-auto"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div v-for="(category, index) in categories" :key="category.id"
-                    :class="['relative group overflow-hidden h-[350px] cursor-pointer', index === 0 ? 'md:col-span-2 lg:col-span-2' : '']">
+        <section v-if="categories && categories.length > 0" class="py-16 bg-white container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <NuxtLink v-for="(category, index) in categories" :key="category.id"
+                    :to="`/shop?category=${encodeURIComponent(category.name)}`"
+                    class="relative group overflow-hidden h-[300px] cursor-pointer block">
                     <NuxtImg :src="category.image || config.public.assets.placeholder.category" :alt="category.name"
-                        class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <h3 class="text-white text-xl md:text-2xl font-serif tracking-widest uppercase border-b-2 border-transparent group-hover:border-white pb-1 transition-all duration-300">
+                            {{ category.name }}
+                        </h3>
                     </div>
-                    <div class="absolute bottom-0 left-0 p-8 w-full">
-                        <h3
-                            class="text-3xl font-serif text-white mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            {{ category.name }}</h3>
-                        <NuxtLink :to="`/shop?category=${category.name}`"
-                            class="inline-block text-luxora-gold text-sm tracking-widest uppercase font-bold opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                            View Collection &rarr;
-                        </NuxtLink>
-                    </div>
-                </div>
+                </NuxtLink>
             </div>
         </section>
 
-        <!-- Featured Collection -->
+        <!-- The Weekly Edit (Featured) -->
         <section class="py-24 bg-white">
             <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-16">
-                    <div class="text-center md:text-left mb-8 md:mb-0">
-                        <span class="text-luxora-gold text-sm tracking-widest uppercase font-bold">Curated For
-                            You</span>
-                        <h2 class="text-4xl md:text-5xl font-serif mt-2">Featured Pieces</h2>
-                    </div>
-                    <NuxtLink to="/shop"
-                        class="text-luxora-black border-b border-luxora-black pb-1 hover:text-luxora-gold hover:border-luxora-gold transition-colors">
-                        View All Products
-                    </NuxtLink>
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-serif mb-4">The Weekly Edit</h2>
+                    <p class="text-gray-600">Our most coveted pieces right now.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
                     <ProductCard v-for="product in featuredProducts" :key="product.id" :product="product" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Date Night Ready Banner -->
+        <section class="bg-[#F2F0EB]">
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Image Left -->
+                <div class="h-[500px] md:h-[600px]">
+                    <NuxtImg src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop" 
+                        alt="Date Night Ready" 
+                        class="h-full w-full object-cover" />
+                </div>
+                <!-- Text Right -->
+                <div class="flex flex-col justify-center items-start p-12 md:p-24">
+                    <h2 class="text-4xl md:text-5xl font-serif mb-6">Date Night Ready</h2>
+                    <p class="text-lg text-gray-600 mb-8 max-w-md">
+                        From sleek dresses to the finishing sparkle. Curated looks for your evening plans.
+                    </p>
+                    <NuxtLink to="/shop?collection=date-night"
+                        class="text-luxora-black font-bold tracking-widest uppercase text-sm border-b-2 border-luxora-black pb-1 hover:text-luxora-gold hover:border-luxora-gold transition-colors duration-300">
+                        [ Shop The Occasion Edit ]
+                    </NuxtLink>
                 </div>
             </div>
         </section>
@@ -133,23 +113,6 @@
             </div>
         </section>
 
-        <!-- Newsletter -->
-        <section class="py-24 container mx-auto px-6">
-            <div class="bg-luxora-gold/10 p-12 md:p-20 text-center rounded-2xl relative overflow-hidden">
-                <div class="relative z-10 max-w-2xl mx-auto">
-                    <h2 class="text-3xl md:text-4xl font-serif mb-4">Join the Luxora Family</h2>
-                    <p class="text-gray-600 mb-8">Subscribe to receive updates, access to exclusive deals, and more.</p>
-                    <form @submit.prevent="subscribe" class="flex flex-col md:flex-row gap-4">
-                        <input type="email" placeholder="Enter your email address" required
-                            class="flex-grow px-6 py-4 bg-white border border-transparent focus:border-luxora-gold focus:outline-none rounded-none" />
-                        <button type="submit"
-                            class="bg-luxora-black text-white px-10 py-4 font-bold tracking-widest hover:bg-luxora-gold hover:text-luxora-black transition-colors duration-300">
-                            SUBSCRIBE
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
     </div>
 </template>
 

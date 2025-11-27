@@ -1,53 +1,66 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-            <div>
-                <h2 class="mt-6 text-center text-3xl font-serif font-bold text-gray-900">
-                    Create your account
-                </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    Or
-                    <NuxtLink to="/login" class="font-medium text-luxora-gold hover:text-luxora-gold-dark">
-                        sign in to your existing account
-                    </NuxtLink>
-                </p>
+    <div class="min-h-screen flex flex-col md:flex-row bg-white">
+        <!-- Image Section (Left) -->
+        <div class="w-full md:w-1/2 h-64 md:h-screen relative overflow-hidden">
+            <NuxtImg src="https://images.unsplash.com/photo-1531995811006-35cb42e1a022?q=80&w=2070&auto=format&fit=crop" 
+                alt="Join Luxora" 
+                class="w-full h-full object-cover object-center" />
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="absolute bottom-12 left-12 text-white p-6 hidden md:block">
+                <h2 class="text-4xl font-serif mb-2">Join the Club.</h2>
+                <p class="text-lg font-light tracking-wide">Experience luxury redefined.</p>
             </div>
-            <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
-                <div class="rounded-md shadow-sm -space-y-px">
-                    <div>
-                        <label for="name" class="sr-only">Full Name</label>
-                        <input id="name" name="name" type="text" required v-model="name"
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-luxora-gold focus:border-luxora-gold focus:z-10 sm:text-sm"
-                            placeholder="Full Name">
-                    </div>
-                    <div>
-                        <label for="email-address" class="sr-only">Email address</label>
-                        <input id="email-address" name="email" type="email" autocomplete="email" required
-                            v-model="email"
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-luxora-gold focus:border-luxora-gold focus:z-10 sm:text-sm"
-                            placeholder="Email address">
-                    </div>
-                    <div>
-                        <label for="password" class="sr-only">Password</label>
-                        <input id="password" name="password" type="password" autocomplete="new-password" required
-                            v-model="password"
-                            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-luxora-gold focus:border-luxora-gold focus:z-10 sm:text-sm"
-                            placeholder="Password">
-                    </div>
+        </div>
+
+        <!-- Form Section (Right) -->
+        <div class="w-full md:w-1/2 flex items-center justify-center p-8 md:p-24">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-12">
+                    <h1 class="font-serif text-3xl md:text-4xl mb-3 text-luxora-black">Create Account</h1>
+                    <p class="text-gray-500 text-sm uppercase tracking-wider">Begin your journey</p>
                 </div>
 
-                <div v-if="error" class="text-red-500 text-sm text-center">
-                    {{ error }}
-                </div>
+                <form @submit.prevent="handleRegister" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider text-luxora-black">Full Name</label>
+                        <input v-model="name" type="text"
+                            class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-luxora-black transition-colors bg-transparent"
+                            placeholder="John Doe"
+                            required />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider text-luxora-black">Email Address</label>
+                        <input v-model="email" type="email"
+                            class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-luxora-black transition-colors bg-transparent"
+                            placeholder="name@example.com"
+                            required />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-2 uppercase tracking-wider text-luxora-black">Password</label>
+                        <input v-model="password" type="password"
+                            class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-luxora-black transition-colors bg-transparent"
+                            placeholder="••••••••"
+                            required />
+                    </div>
 
-                <div>
+                    <div v-if="error" class="text-red-500 text-sm text-center py-2">{{ error }}</div>
+
                     <button type="submit" :disabled="loading"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-luxora-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-luxora-gold disabled:opacity-50">
-                        <span v-if="loading">Creating Account...</span>
-                        <span v-else>Sign up</span>
+                        class="w-full bg-luxora-black text-white py-4 text-sm font-bold tracking-widest uppercase hover:bg-luxora-gold hover:text-luxora-black transition-all duration-300 disabled:opacity-50 mt-8">
+                        {{ loading ? 'Creating Account...' : 'Create Account' }}
                     </button>
+                </form>
+
+                <div class="mt-12 text-center border-t border-gray-100 pt-8">
+                    <p class="text-sm text-gray-500">
+                        Already have an account?
+                        <NuxtLink to="/login"
+                            class="font-bold text-luxora-black hover:text-luxora-gold transition-colors ml-1 uppercase tracking-wider text-xs border-b border-luxora-black pb-0.5 hover:border-luxora-gold">
+                            Sign In
+                        </NuxtLink>
+                    </p>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </template>
